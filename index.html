@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Monster Tamer — Le Défi du 1:1</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ===== VARIABLES RETROFUTURISTES ===== */
+    :root {
+      --teal: #127676;
+      --orange: #E4632E;
+      --jaune: #E3A535;
+      --ink: #0D1617;
+      --paper: #F2EFE6;
+      --font-title: 'Oswald', Impact, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ===== RESET ===== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ===== APP WRAPPER ===== */
+    #app {
+      width: 100%;
+      max-width: 900px;
+      min-height: 100vh;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ===== ÉCRANS ===== */
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* ===== BOUTONS ===== */
+    .btn {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      padding: 13px 32px;
+      border-radius: 50px;
+      transition: transform 0.12s, box-shadow 0.12s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--jaune);
+      color: var(--ink);
+      box-shadow: 0 4px 18px rgba(227, 165, 53, 0.35);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--paper);
+      border: 2px solid var(--teal);
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: var(--paper);
+    }
+
+    button:disabled {
+      cursor: not-allowed !important;
+    }
+
+    /* ====================================================
+       ÉCRAN D'ACCUEIL
+    ==================================================== */
+    #screen-welcome {
+      text-align: center;
+      padding: 40px 24px;
+      background: radial-gradient(ellipse at 50% 25%, #0e2b2b 0%, var(--ink) 65%);
+    }
+
+    #screen-welcome h1 {
+      font-family: var(--font-title);
+      font-size: clamp(3rem, 9vw, 5.5rem);
+      color: var(--jaune);
+      text-transform: uppercase;
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(227, 165, 53, 0.4);
+    }
+
+    #screen-welcome h1 span {
+      color: var(--orange);
+    }
+
+    .subtitle-badge {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: var(--teal);
+      border: 1px solid var(--teal);
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .tagline {
+      font-style: italic;
+      color: var(--paper);
+      opacity: 0.65;
+      margin: 22px auto 36px;
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    .welcome-monsters {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-monster-thumb {
+      width: 58px;
+      height: 58px;
+      border: 2px solid rgba(18, 118, 118, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(18, 118, 118, 0.06);
+    }
+
+    /* ====================================================
+       SÉLECTION DU PERSONNAGE
+    ==================================================== */
+    #screen-select {
+      padding: 50px 20px 40px;
+      justify-content: flex-start;
+      padding-top: 60px;
+    }
+
+    #screen-select h2 {
+      font-family: var(--font-title);
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: var(--jaune);
+      margin-bottom: 6px;
+    }
+
+    #screen-select .sub {
+      color: var(--paper);
+      opacity: 0.55;
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+    }
+
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .char-card {
+      background: rgba(18, 118, 118, 0.07);
+      border: 2px solid rgba(18, 118, 118, 0.25);
+      border-radius: 12px;
+      padding: 14px 10px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .char-card:hover {
+      border-color: var(--teal);
+      background: rgba(18, 118, 118, 0.14);
+      transform: translateY(-3px);
+    }
+
+    .char-card.selected {
+      border-color: var(--jaune);
+      background: rgba(227, 165, 53, 0.08);
+      box-shadow: 0 0 18px rgba(227, 165, 53, 0.25);
+    }
+
+    .char-name {
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      color: var(--teal);
+      margin-top: 6px;
+    }
+
+    .char-desc {
+      font-size: 0.65rem;
+      color: var(--paper);
+      opacity: 0.45;
+      margin-top: 2px;
+    }
+
+    .select-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 14px;
+    }
+
+    /* ====================================================
+       ÉCRAN DE JEU
+    ==================================================== */
+    #screen-game {
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    /* HUD */
+    #hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid rgba(18, 118, 118, 0.3);
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #lives {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .life-icon {
+      transition: all 0.3s;
+      display: flex;
+    }
+
+    .life-icon.lost {
+      opacity: 0.18;
+      filter: grayscale(1) brightness(0.5);
+    }
+
+    #progress-bar {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+      max-width: 360px;
+    }
+
+    .prog-seg {
+      flex: 1;
+      height: 7px;
+      background: rgba(18, 118, 118, 0.15);
+      border: 1px solid rgba(18, 118, 118, 0.35);
+      border-radius: 4px;
+      transition: background 0.5s;
+    }
+
+    .prog-seg.done {
+      background: var(--teal);
+    }
+
+    .prog-seg.current {
+      background: var(--jaune);
+      animation: segPulse 1s infinite;
+    }
+
+    #ammo {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    #ammo-label {
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--paper);
+      opacity: 0.5;
+      margin-right: 4px;
+    }
+
+    .ammo-icon {
+      width: 14px;
+      height: 11px;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .ammo-icon.spent {
+      opacity: 0.15;
+      transform: scale(0.7);
+    }
+
+    .btn-mute {
+      background: none;
+      border: 1px solid rgba(18,118,118,0.3);
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .btn-mute:hover { opacity: 0.7; }
+
+    #timer-wrap {
+      width: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: center;
+    }
+
+    #timer-wrap.hidden {
+      visibility: hidden;
+    }
+
+    #timer-label {
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--paper);
+      opacity: 0.5;
+    }
+
+    #timer-bar-outer {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    #timer-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--jaune);
+      border-radius: 4px;
+      transition: width 0.05s linear, background 0.25s;
+    }
+
+    /* STAGE RUNNER */
+    #runner-stage {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      overflow: hidden;
+      cursor: crosshair;
+      flex-shrink: 0;
+      background: var(--ink);
+    }
+
+    /* Fond défilant */
+    #bg-scroll {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      animation: scrollBg 14s linear infinite;
+      display: flex;
+    }
+
+    #bg-scroll>* {
+      flex: 0 0 50%;
+      width: 50%;
+      height: 100%;
+    }
+
+
+    /* Personnage joueur */
+    #player-char {
+      position: absolute;
+      left: 11%;
+      bottom: 38px;
+      width: 56px;
+      z-index: 10;
+      animation: charBob 0.42s infinite alternate ease-in-out;
+    }
+
+    /* Monstre */
+    #monster-wrap {
+      position: absolute;
+      bottom: 28px;
+      width: 88px;
+      z-index: 12;
+    }
+
+    #monster-wrap.taming {
+      animation: tamingAnim 0.7s forwards;
+    }
+
+    /* Projectile livre */
+    #book {
+      position: absolute;
+      width: 26px;
+      height: 20px;
+      z-index: 20;
+      display: none;
+      pointer-events: none;
+    }
+
+    /* Feedback texte */
+    #feedback-text {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      pointer-events: none;
+      z-index: 30;
+      opacity: 0;
+      transition: opacity 0.15s;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+    }
+
+    #feedback-text.show {
+      opacity: 1;
+    }
+
+    #feedback-text.miss {
+      color: var(--orange);
+    }
+
+    #feedback-text.timeout {
+      color: #CC2222;
+    }
+
+    #feedback-text.hit {
+      color: #7fffd4;
+    }
+
+    /* Bulle de peur du monstre */
+    .monster-peur-bubble {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 22, 23, 0.9);
+      border: 1.5px solid var(--orange);
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-size: 0.62rem;
+      font-style: italic;
+      color: var(--paper);
+      white-space: normal;
+      max-width: 210px;
+      min-width: 120px;
+      text-align: center;
+      line-height: 1.35;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+
+    .monster-peur-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--orange);
+    }
+
+    /* Nom du monstre */
+    #monster-name-tag {
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      font-family: var(--font-title);
+      font-size: 0.82rem;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    #monster-name-tag.show {
+      opacity: 1;
+    }
+
+    /* Hint */
+    #hint-text {
+      text-align: center;
+      padding: 5px 20px;
+      font-size: 0.78rem;
+      color: var(--paper);
+      opacity: 0.45;
+      flex-shrink: 0;
+    }
+
+    /* ===== MODAL INTRO MISSION ===== */
+    #modal-intro {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 22, 23, 0.94);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #modal-intro.show {
+      display: flex;
+    }
+
+    .intro-card {
+      background: var(--paper);
+      color: var(--ink);
+      border: 3px solid var(--teal);
+      border-radius: 24px 8px 24px 8px;
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(18, 118, 118, 0.3);
+      animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .intro-header {
+      background: var(--ink);
+      padding: 22px 22px 16px;
+      border-bottom: 3px solid var(--jaune);
+      text-align: center;
+    }
+
+    .intro-header h3 {
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      color: var(--jaune);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .intro-header p {
+      color: var(--paper);
+      opacity: 0.9;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .intro-body {
+      padding: 18px 22px;
+    }
+
+    .intro-body h4 {
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      color: var(--teal);
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .intro-controls {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .intro-controls li {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #2a2a2a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .intro-key {
+      display: inline-block;
+      min-width: 28px;
+      padding: 2px 8px;
+      background: var(--ink);
+      color: var(--jaune);
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      border-radius: 5px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .intro-footer {
+      border-top: 1px solid rgba(18, 118, 118, 0.2);
+      padding: 14px 22px;
+      text-align: center;
+      background: rgba(18, 118, 118, 0.03);
+    }
+
+    /* ===== MODAL PRÉ-MONSTRE ===== */
+    #modal-premonstre {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 22, 23, 0.94);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    #modal-premonstre.show {
+      display: flex;
+    }
+
+    .premonstre-card {
+      text-align: center;
+      max-width: 560px;
+      width: 100%;
+      animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .premonstre-svg {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      filter: drop-shadow(0 0 18px rgba(228, 99, 46, 0.5));
+    }
+
+    .premonstre-alerte {
+      font-family: var(--font-title);
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      color: var(--orange);
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .premonstre-nom {
+      font-family: var(--font-title);
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      color: var(--jaune);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      text-shadow: 0 0 30px rgba(227, 165, 53, 0.4);
+    }
+
+    .premonstre-peur {
+      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--paper);
+      line-height: 1.45;
+      margin-bottom: 36px;
+      opacity: 0.92;
+      border-left: 3px solid var(--orange);
+      padding-left: 18px;
+      text-align: left;
+    }
+
+    /* ===== MODAL RÉVÉLATION ===== */
+    #modal-reveal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 22, 23, 0.88);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    #modal-reveal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--paper);
+      color: var(--ink);
+      border: 3px solid var(--teal);
+      border-radius: 24px 8px 24px 8px;
+      max-width: 540px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(18, 118, 118, 0.3), inset 0 0 0 5px rgba(228, 99, 46, 0.08);
+      animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: var(--ink);
+      padding: 18px 22px 14px;
+      border-bottom: 3px solid var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .modal-header-svg {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+    }
+
+    .modal-header-text {}
+
+    .nom-initial {
+      font-family: var(--font-title);
+      font-size: 0.8rem;
+      color: var(--orange);
+      text-decoration: line-through;
+      opacity: 0.7;
+      letter-spacing: 0.1em;
+    }
+
+    .nom-dompte {
+      font-family: var(--font-title);
+      font-size: 1.45rem;
+      color: var(--teal);
+      letter-spacing: 0.04em;
+    }
+
+    .modal-body {
+      padding: 18px 22px;
+    }
+
+    .peur-text {
+      font-style: italic;
+      color: var(--orange);
+      text-decoration: line-through;
+      font-size: 0.87rem;
+      margin-bottom: 12px;
+      opacity: 0.75;
+      line-height: 1.4;
+    }
+
+    .levier-title {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .levier-desc {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: #2a2a2a;
+      margin-bottom: 14px;
+    }
+
+    .exemples-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .exemples-list li {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #3a3a3a;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .exemples-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--orange);
+    }
+
+    .modal-footer {
+      border-top: 1px solid rgba(18, 118, 118, 0.2);
+      padding: 12px 22px;
+      text-align: right;
+      background: rgba(18, 118, 118, 0.03);
+    }
+
+    /* ===== COLLECTION ===== */
+    #collection {
+      background: var(--paper);
+      border-top: 3px solid var(--teal);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      min-height: 65px;
+    }
+
+    #collection-label {
+      font-family: var(--font-title);
+      font-size: 0.65rem;
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    #collection-items {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .col-item {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 2px solid var(--teal);
+      overflow: hidden;
+      background: var(--ink);
+      box-shadow: 0 0 10px rgba(18, 118, 118, 0.35);
+      animation: addItem 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: default;
+    }
+
+    .col-item svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ====================================================
+       GAME OVER
+    ==================================================== */
+    #screen-gameover {
+      text-align: center;
+      padding: 50px 24px;
+      background: radial-gradient(ellipse at 50% 40%, #2a0a0a 0%, var(--ink) 65%);
+    }
+
+    #screen-gameover h2 {
+      font-family: var(--font-title);
+      font-size: clamp(3rem, 11vw, 6rem);
+      color: var(--orange);
+      text-shadow: 0 0 40px rgba(228, 99, 46, 0.45);
+      letter-spacing: 0.08em;
+    }
+
+    #screen-gameover .go-msg {
+      font-style: italic;
+      opacity: 0.75;
+      margin: 14px auto 28px;
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    #gameover-collection {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .go-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ====================================================
+       ÉCRAN DE FIN
+    ==================================================== */
+    #screen-end {
+      text-align: center;
+      padding: 50px 24px;
+      background: radial-gradient(ellipse at 50% 30%, #092525 0%, var(--ink) 65%);
+    }
+
+    #screen-end h2 {
+      font-family: var(--font-title);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      color: var(--jaune);
+      margin-bottom: 6px;
+    }
+
+    .conclusion {
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+      opacity: 0.88;
+    }
+
+    /* Danse de la victoire */
+    #end-dance {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .dance-item {
+      text-align: center;
+    }
+
+    .dance-item svg {
+      width: 68px;
+      height: 68px;
+    }
+
+    .dance-hero svg {
+      width: 80px;
+      height: 80px;
+    }
+
+    .dance-name {
+      display: block;
+      font-family: var(--font-title);
+      font-size: 0.62rem;
+      color: var(--teal);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    @keyframes danceBounce {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      25% {
+        transform: translateY(-18px) rotate(-8deg);
+      }
+
+      50% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      75% {
+        transform: translateY(-18px) rotate(8deg);
+      }
+    }
+
+    @keyframes danceHero {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+
+      20% {
+        transform: translateY(-25px) rotate(-10deg) scale(1.05);
+      }
+
+      40% {
+        transform: translateY(0) rotate(5deg) scale(1);
+      }
+
+      60% {
+        transform: translateY(-25px) rotate(10deg) scale(1.05);
+      }
+
+      80% {
+        transform: translateY(0) rotate(-5deg) scale(1);
+      }
+    }
+
+    .dance-item {
+      animation: danceBounce 1.2s ease-in-out infinite;
+    }
+
+    .dance-item:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .dance-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .dance-item:nth-child(4) {
+      animation-delay: 0.45s;
+    }
+
+    .dance-item:nth-child(5) {
+      animation-delay: 0.6s;
+    }
+
+    .dance-hero {
+      animation: danceHero 1s ease-in-out infinite !important;
+    }
+
+    #end-collection {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .end-card {
+      width: 78px;
+      text-align: center;
+    }
+
+    .end-card svg {
+      width: 68px;
+      height: 68px;
+    }
+
+    .end-name {
+      display: block;
+      font-family: var(--font-title);
+      font-size: 0.62rem;
+      color: var(--teal);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    /* ====================================================
+       FLASH OVERLAY
+    ==================================================== */
+    #flash-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0;
+    }
+
+    #flash-overlay.flash-red {
+      animation: flashAnim 0.35s ease-out forwards;
+      background: #CC0000;
+    }
+
+    #flash-overlay.flash-teal {
+      animation: flashAnim 0.35s ease-out forwards;
+      background: var(--teal);
+    }
+
+    /* ====================================================
+       ANIMATIONS
+    ==================================================== */
+    @keyframes scrollBg {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes charBob {
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes segPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.45;
+      }
+    }
+
+    @keyframes zonePulse {
+      from {
+        box-shadow: 0 0 6px var(--orange);
+      }
+
+      to {
+        box-shadow: 0 0 16px var(--orange);
+      }
+    }
+
+    @keyframes flashAnim {
+      0% {
+        opacity: 0;
+      }
+
+      30% {
+        opacity: 0.55;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes cardIn {
+      from {
+        transform: scale(0.82) translateY(18px);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes addItem {
+      0% {
+        transform: scale(0);
+      }
+
+      70% {
+        transform: scale(1.18);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-9px);
+      }
+
+      40% {
+        transform: translateX(9px);
+      }
+
+      60% {
+        transform: translateX(-5px);
+      }
+
+      80% {
+        transform: translateX(5px);
+      }
+    }
+
+    @keyframes monsterIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      75% {
+        transform: scale(1.14);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes monsterLaugh {
+
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+
+      30% {
+        transform: scale(1.1) rotate(-6deg);
+      }
+
+      70% {
+        transform: scale(1.1) rotate(6deg);
+      }
+    }
+
+    @keyframes monsterAttack {
+      0% {
+        transform: translateX(0);
+      }
+
+      50% {
+        transform: translateX(-50px) scale(1.1);
+      }
+
+      100% {
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    @keyframes monsterBounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    /* Pendant le saut : animation charBob désactivée, z-index réduit */
+    #player-char.jumping {
+      animation: none !important;
+      z-index: 6;
+    }
+
+    @keyframes tamingAnim {
+      0% {
+        filter: brightness(1);
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      40% {
+        filter: brightness(4) saturate(0);
+        transform: scale(0.4);
+        opacity: 0.2;
+      }
+
+      70% {
+        filter: brightness(1) saturate(1) hue-rotate(180deg);
+        transform: scale(1.1);
+        opacity: 1;
+      }
+
+      100% {
+        filter: drop-shadow(0 0 10px #127676);
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes runLegL {
+
+      0%,
+      100% {
+        transform: rotate(-22deg);
+      }
+
+      50% {
+        transform: rotate(22deg);
+      }
+    }
+
+    @keyframes runLegR {
+
+      0%,
+      100% {
+        transform: rotate(22deg);
+      }
+
+      50% {
+        transform: rotate(-22deg);
+      }
+    }
+
+    @keyframes runArmL {
+
+      0%,
+      100% {
+        transform: rotate(18deg);
+      }
+
+      50% {
+        transform: rotate(-18deg);
+      }
+    }
+
+    @keyframes runArmR {
+
+      0%,
+      100% {
+        transform: rotate(-18deg);
+      }
+
+      50% {
+        transform: rotate(18deg);
+      }
+    }
+
+    .leg-l {
+      animation: runLegL 0.38s infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 0%;
+    }
+
+    .leg-r {
+      animation: runLegR 0.38s infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 0%;
+    }
+
+    .arm-l {
+      animation: runArmL 0.38s infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 0%;
+    }
+
+    .arm-r {
+      animation: runArmR 0.38s infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 0%;
+    }
+
+    /* ====================================================
+       OVERLAY ROTATION (portrait → paysage)
+    ==================================================== */
+    #rotate-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      gap: 18px;
+    }
+    #rotate-overlay .rotate-icon {
+      font-size: 3.5rem;
+      animation: rotateHint 2s ease-in-out infinite;
+    }
+    #rotate-overlay p {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--jaune);
+      letter-spacing: 0.06em;
+    }
+    #rotate-overlay .rotate-sub {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--paper);
+      opacity: 0.6;
+    }
+    @keyframes rotateHint {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(90deg); }
+    }
+
+    /* ====================================================
+       TOUCH CONTROLS (mobile)
+    ==================================================== */
+    #touch-controls {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      padding: 8px 12px 12px;
+      pointer-events: none;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    #touch-controls.show { display: flex; }
+    /* Masquer les contrôles quand un modal est ouvert */
+    body.modal-open #touch-controls { display: none !important; }
+
+    .touch-zone { display: flex; gap: 8px; pointer-events: auto; }
+
+    .touch-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid rgba(18,118,118,0.6);
+      background: rgba(13,22,23,0.75);
+      color: var(--jaune);
+      font-size: 1.4rem;
+      font-family: var(--font-title);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: transform 0.08s, background 0.08s;
+    }
+    .touch-btn:active, .touch-btn.pressed {
+      transform: scale(0.9);
+      background: rgba(18,118,118,0.5);
+      border-color: var(--jaune);
+    }
+    .touch-btn-large {
+      width: 68px;
+      height: 68px;
+      font-size: 1.1rem;
+      border-color: rgba(227,165,53,0.6);
+    }
+    .touch-btn-large:active, .touch-btn-large.pressed {
+      background: rgba(227,165,53,0.35);
+      border-color: var(--jaune);
+    }
+
+    /* ====================================================
+       RESPONSIVE MOBILE LANDSCAPE
+    ==================================================== */
+    @media (max-width: 560px) {
+      .character-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      #runner-stage {
+        height: 270px;
+      }
+    }
+
+    /* Portrait phones: show rotate overlay */
+    @media (max-width: 768px) and (orientation: portrait) {
+      #rotate-overlay { display: flex !important; }
+      #app { display: none !important; }
+    }
+
+    /* Landscape phones & small tablets */
+    @media (max-height: 500px) {
+      /* Compact all screens */
+      .screen { min-height: 100vh; min-height: 100dvh; }
+      #app { min-height: 100vh; min-height: 100dvh; }
+
+      /* Welcome */
+      #screen-welcome { padding: 16px 20px; }
+      #screen-welcome h1 { font-size: clamp(1.6rem, 6vw, 2.8rem); }
+      .tagline { margin: 10px auto 16px; font-size: 0.78rem; }
+      .welcome-monsters { margin-bottom: 16px; gap: 8px; }
+      .welcome-monster-thumb { width: 40px; height: 40px; }
+
+      /* Select */
+      #screen-select { padding: 12px 16px; }
+      #screen-select h2 { font-size: 1.1rem; margin-bottom: 4px; }
+      #screen-select .sub { margin-bottom: 10px; font-size: 0.75rem; }
+      .character-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 480px; }
+      .char-card { padding: 8px 6px 6px; border-radius: 8px; }
+      .char-card svg { width: 44px; height: 44px; }
+      .char-name { font-size: 0.6rem; }
+      .char-desc { font-size: 0.55rem; }
+      .select-actions { margin-top: 12px; }
+
+      /* HUD */
+      #hud { padding: 4px 10px; gap: 6px; }
+      .life-icon svg { width: 18px; height: 18px; }
+      .btn-mute { font-size: 0.8rem; padding: 1px 4px; }
+      #ammo-label { font-size: 0.5rem; }
+      .ammo-icon { width: 11px; height: 8px; }
+      #timer-wrap { width: 80px; }
+
+      /* Stage */
+      #runner-stage { height: calc(100dvh - 90px); min-height: 180px; }
+      body.touch-active #runner-stage { height: calc(100dvh - 155px); }
+      #player-char { width: 44px; bottom: 30px; }
+      #monster-wrap { width: 68px; bottom: 22px; }
+      .monster-peur-bubble { font-size: 0.52rem; max-width: 150px; min-width: 90px; padding: 3px 6px; }
+      #monster-name-tag { font-size: 0.65rem; }
+      #feedback-text { font-size: 1.1rem; }
+      #hint-text { display: none; }
+      #book { width: 20px; height: 15px; }
+
+      /* Collection */
+      #collection { padding: 4px 10px; min-height: 44px; }
+      #collection-label { font-size: 0.55rem; }
+      .col-item { width: 32px; height: 32px; border-radius: 5px; }
+
+
+      /* Modals */
+      .intro-card, .modal-card, .premonstre-card { max-height: 92dvh; }
+      .intro-card { max-width: 90vw; }
+      .intro-header { padding: 12px 14px 10px; }
+      .intro-header h3 { font-size: 1rem; margin-bottom: 6px; }
+      .intro-header p { font-size: 0.75rem; }
+      .intro-body { padding: 10px 14px; }
+      .intro-body h4 { font-size: 0.8rem; }
+      .intro-controls li { font-size: 0.72rem; gap: 6px; }
+      .intro-key { font-size: 0.65rem; padding: 1px 5px; }
+      .intro-footer { padding: 8px 14px; }
+      .intro-footer .btn { font-size: 0.85rem; padding: 9px 20px; }
+
+      .premonstre-svg { width: 60px; height: 60px; margin-bottom: 10px; }
+      .premonstre-alerte { font-size: 0.65rem; }
+      .premonstre-nom { font-size: clamp(1.3rem, 5vw, 2rem); margin-bottom: 14px; }
+      .premonstre-peur { font-size: clamp(0.85rem, 2.5vw, 1.1rem); margin-bottom: 18px; padding-left: 12px; }
+
+      .modal-card { max-width: 92vw; }
+      .modal-header { padding: 10px 14px 8px; gap: 10px; }
+      .modal-header-svg { width: 42px; height: 42px; }
+      .nom-initial { font-size: 0.65rem; }
+      .nom-dompte { font-size: 1.05rem; }
+      .modal-body { padding: 10px 14px; }
+      .peur-text { font-size: 0.75rem; margin-bottom: 8px; }
+      .levier-title { font-size: 0.9rem; }
+      .levier-desc { font-size: 0.78rem; margin-bottom: 10px; }
+      .exemples-list li { font-size: 0.72rem; }
+      .modal-footer { padding: 8px 14px; }
+
+      /* Game over & End */
+      #screen-gameover, #screen-end { padding: 20px 18px; }
+      #screen-gameover h2 { font-size: clamp(2rem, 8vw, 3.5rem); }
+      .go-msg { font-size: 0.8rem; margin: 8px auto 16px; }
+      #screen-end h2 { font-size: clamp(1.2rem, 4vw, 2rem); }
+      .conclusion { font-size: 0.8rem; margin-bottom: 16px; }
+      .dance-item svg { width: 44px; height: 44px; }
+      .dance-hero svg { width: 54px; height: 54px; }
+      .dance-name { font-size: 0.5rem; }
+      #end-dance { gap: 10px; margin-bottom: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Overlay rotation portrait -->
+  <div id="rotate-overlay">
+    <div class="rotate-icon">📱</div>
+    <p>TOURNE TON ÉCRAN</p>
+    <span class="rotate-sub">Ce jeu se joue en mode paysage</span>
+  </div>
+
+  <div id="app">
+
+    <!-- Overlay flash (effets rouges/teal) -->
+    <div id="flash-overlay"></div>
+
+    <!-- ================================================
+       ÉCRAN D'ACCUEIL
+  ================================================ -->
+    <div id="screen-welcome" class="screen active">
+      <h1>MONSTER<br><span>TAMER</span></h1>
+      <div class="subtitle-badge">ENSEIGNANTS · LE DÉFI DU NUMÉRIQUE</div>
+      <p class="tagline">Tu intègres le numérique en classe ?<br>Ces 5 monstres te connaissent — apprivoise-les.</p>
+      <div class="welcome-monsters" id="welcome-monsters"></div>
+      <button class="btn btn-primary" onclick="showScreen('screen-select')">▶ COMMENCER</button>
+    </div>
+
+    <!-- ================================================
+       SÉLECTION DU PERSONNAGE
+  ================================================ -->
+    <div id="screen-select" class="screen">
+      <h2>CHOISIS TON ENSEIGNANT</h2>
+      <p class="sub">Aide-le à dompter les monstres!</p>
+      <div class="character-grid" id="character-grid"></div>
+      <div class="select-actions">
+        <button class="btn btn-secondary" onclick="showScreen('screen-welcome')">← RETOUR</button>
+        <button class="btn btn-primary" id="btn-play" onclick="startGame()" disabled
+          style="opacity:.4;cursor:not-allowed">JOUER →</button>
+      </div>
+    </div>
+
+    <!-- ================================================
+       ÉCRAN DE JEU
+  ================================================ -->
+    <div id="screen-game" class="screen">
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="lives"></div>
+        <div id="ammo"></div>
+        <div id="progress-bar"></div>
+        <button id="btn-mute" class="btn-mute" onclick="toggleMute()" title="Couper/activer la musique">🔊</button>
+        <div id="timer-wrap" class="hidden">
+          <div id="timer-label">TEMPS</div>
+          <div id="timer-bar-outer">
+            <div id="timer-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage de jeu (clic = tir) -->
+      <div id="runner-stage" onclick="shoot()">
+        <div id="bg-scroll"></div>
+        <div id="player-char"></div>
+        <div id="monster-wrap"></div>
+        <!-- Livre / projectile -->
+        <div id="book">
+          <svg viewBox="0 0 26 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="24" height="18" rx="3" fill="#E3A535" stroke="#E4632E" stroke-width="1.5" />
+            <line x1="13" y1="1" x2="13" y2="19" stroke="#E4632E" stroke-width="1.2" />
+            <line x1="5" y1="7" x2="11" y2="7" stroke="#E4632E" stroke-width="0.9" />
+            <line x1="5" y1="11" x2="11" y2="11" stroke="#E4632E" stroke-width="0.9" />
+            <line x1="15" y1="7" x2="21" y2="7" stroke="#E4632E" stroke-width="0.9" />
+            <line x1="15" y1="11" x2="21" y2="11" stroke="#E4632E" stroke-width="0.9" />
+          </svg>
+        </div>
+        <div id="feedback-text"></div>
+        <div id="monster-name-tag"></div>
+      </div>
+
+      <!-- Consigne -->
+      <div id="hint-text">ESPACE pour tirer · ↑ pour sauter par-dessus le monstre · ← → pour se déplacer</div>
+
+      <!-- Galerie de collection -->
+      <div id="collection">
+        <div id="collection-label">DOMPTÉS</div>
+        <div id="collection-items"></div>
+      </div>
+
+    </div><!-- /screen-game -->
+
+    <!-- Touch controls mobiles -->
+    <div id="touch-controls">
+      <div class="touch-zone">
+        <button class="touch-btn" id="touch-left" aria-label="Gauche">◀</button>
+        <button class="touch-btn" id="touch-right" aria-label="Droite">▶</button>
+      </div>
+      <div class="touch-zone">
+        <button class="touch-btn touch-btn-large" id="touch-jump" aria-label="Sauter">⬆</button>
+        <button class="touch-btn touch-btn-large" id="touch-shoot" aria-label="Tirer">📖</button>
+      </div>
+    </div>
+
+    <!-- ================================================
+       MODAL INTRO MISSION
+  ================================================ -->
+    <div id="modal-intro">
+      <div class="intro-card">
+        <div class="intro-header">
+          <h3>MISSION BRIEFING</h3>
+          <p>
+            Bienvenu courageux enseignant qui va te retrouver face à des classes équipées de PC portables !<br><br>
+            Ta mission, si tu l'acceptes : <strong>apprivoiser les peurs</strong> face auxquelles nous nous retrouvons
+            tous !
+          </p>
+        </div>
+        <div class="intro-body">
+          <h4>COMMENT JOUER</h4>
+          <ul class="intro-controls intro-controls-keyboard">
+            <li><span class="intro-key">←</span><span class="intro-key">→</span> Se déplacer dans le décor</li>
+            <li><span class="intro-key">↑</span> Sauter par-dessus le monstre pour l'esquiver</li>
+            <li><span class="intro-key">ESPACE</span> Lancer un livre pour dompter le monstre</li>
+          </ul>
+          <ul class="intro-controls intro-controls-touch" style="display:none;">
+            <li><span class="intro-key">◀</span><span class="intro-key">▶</span> Se déplacer dans le décor</li>
+            <li><span class="intro-key">⬆</span> Sauter par-dessus le monstre</li>
+            <li><span class="intro-key">📖</span> Lancer un livre pour dompter le monstre</li>
+          </ul>
+          <p style="margin-top:14px;font-size:0.82rem;color:#555;line-height:1.5;">
+            Vise bien : le livre doit toucher le monstre. De trop près il passe au-dessus, de trop loin, il ne touche
+            rien !<br>
+            Tu as <strong>3 livres</strong> — Saute au dessus du monstre pour en récupérer.<br>
+            Si le monstre te touche, tu perds une vie. Tu as <strong>3 vies</strong> au total.
+          </p>
+        </div>
+        <div class="intro-footer">
+          <button class="btn btn-primary" onclick="lancerApresIntro()">J'ACCEPTE LA MISSION !</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================
+       MODAL PRÉ-MONSTRE
+  ================================================ -->
+    <div id="modal-premonstre">
+      <div class="premonstre-card">
+        <div class="premonstre-svg" id="premonstre-svg"></div>
+        <div class="premonstre-alerte">⚠ PEUR DÉTECTÉE</div>
+        <div class="premonstre-nom" id="premonstre-nom"></div>
+        <p class="premonstre-peur" id="premonstre-peur"></p>
+        <button class="btn btn-primary" onclick="demarrerMonstre()">⚔ AFFRONTER</button>
+      </div>
+    </div>
+
+    <!-- ================================================
+       PANNEAU RÉVÉLATION (modal)
+  ================================================ -->
+    <div id="modal-reveal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-header-svg" id="modal-svg"></div>
+          <div class="modal-header-text">
+            <div class="nom-initial" id="modal-nom-initial"></div>
+            <div class="nom-dompte" id="modal-nom-dompte"></div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="peur-text" id="modal-peur"></div>
+          <div class="levier-title" id="modal-levier-title"></div>
+          <div class="levier-desc" id="modal-levier-desc"></div>
+          <ul class="exemples-list" id="modal-exemples"></ul>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" onclick="continuerApresReveal()">CONTINUER →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================
+       GAME OVER
+  ================================================ -->
+    <div id="screen-gameover" class="screen">
+      <h2>GAME OVER</h2>
+      <p class="go-msg">En classe, on ne s'avoue jamais vaincu.<br>Reprends là où tu t'es arrêté·e — tu as déjà les
+        clés.</p>
+      <div id="gameover-collection"></div>
+      <div class="go-actions">
+        <button class="btn btn-primary" onclick="reessayer()">↺ RÉESSAYER</button>
+        <button class="btn btn-secondary" onclick="retourSelect()">↩ CHANGER DE PERSO</button>
+      </div>
+    </div>
+
+    <!-- ================================================
+       ÉCRAN DE FIN
+  ================================================ -->
+    <div id="screen-end" class="screen">
+      <h2>MISSION ACCOMPLIE !</h2>
+      <p class="conclusion">
+        Tu as nommé et apprivoisé les 5 peurs que chaque enseignant connaît.<br>
+        Ces freins ne disparaissent pas d'eux-mêmes — mais tu peux les transformer en leviers concrets. Peu importe la
+        section dans laquelle tu enseignes, peu importe le cours que tu enseignes, le numérique peut aussi être un
+        allié!
+      </p>
+      <div id="end-dance"></div>
+      <div id="end-collection"></div>
+      <button class="btn btn-primary" onclick="retourSelect()">↩ REJOUER</button>
+    </div>
+
+  </div><!-- /app -->
+
+  <script>
+    /* ======================================================
+       DONNÉES DES MONSTRES
+    ====================================================== */
+    const MONSTRES = [
+      {
+        id: "distractus",
+        nom: "DISTRACTUS",
+        peur: "Les élèves vont être sur TikTok au lieu de travailler",
+        nomDompte: "Distractus l'Engagé",
+        levier: "L'engagement bat la distraction",
+        description: "Un élève distrait cherche du sens. Avec le 1:1, tu peux proposer des activités qui rivalisent avec le scroll : recherches guidées sur leur métier, création de contenu pro, mises en situation réelles.",
+        exemplesCRBTP: [
+          "En Soin : les élèves filment et commentent un geste de soin pour créer une fiche pratique multimédia partagée sur Teams.",
+          "En Restauration : ils réalisent un jeu de flashcard avec photo pour retenir les noms des ustensiles de cuisine .",
+          "En Français : les élèves créent un blog de critiques littéraires — écrire pour un vrai public voilà un bel enjeu!",
+          "En Math : des défis interactifs sur GeoGebra ou des quiz Kahoot chronométrés captent l'attention mieux qu'un cours ex cathedra.",
+          "En Langue : enregistrer un dialogue dans la langue cible et évaluer analyser la prestation de ses pairs.",
+          "En FHG : ils peuvent mener une enquête collaborative en ligne sur un événement d'actualité, chaque élève apportant sa source.",
+          "Règle d'or : si l'activité est plus engageante que TikTok, TikTok perd."
+        ]
+      },
+      {
+        id: "pannus",
+        nom: "PANNUS",
+        peur: "Je ne maîtrise pas la technique — je vais me ridiculiser devant mes élèves",
+        nomDompte: "Pannus le Sage",
+        levier: "L'enseignant n'est plus l'expert unique",
+        description: "Ne pas tout savoir sur l'outil n'est pas forcément une faiblesse — c'est aussi une opportunité pédagogique. L'élève expert devient une ressource. Tu gardes le cap pédagogique, tu délègues la technique.",
+        exemplesCRBTP: [
+          "En Comptabilité : identifier les 2–3 élèves les plus à l'aise avec Excel comme 'ambassadeurs numériques' de la classe.",
+          "Dans n'importe quel cours : tu maîtrises le processus, pas forcément l'outil. L'élève gère l'outil, toi tu valides le fond.",
+          "En Français : un élève maîtrise mieux le correcteur orthographique ? Fais-en le référent — toi tu gardes l'expertise sur la conception pédagogique.",
+          "En Math : un élève connaît une fonction Excel que tu ignores ? Parfait — demande-lui de l'expliquer à la classe pendant que tu valides le raisonnement.",
+          "En Langue : les élèves testent ensemble un outil de traduction et identifient ses limites — tu guides l'analyse critique, pas la technique.",
+          "En FHG : un élève trouve une source en ligne plus vite que toi ? C'est l'occasion d'enseigner la vérification des sources ensemble.",
+          "Formule magique : 'Je ne sais pas, on cherche ensemble' — c'est de la modélisation cognitive en action."
+        ]
+      },
+      {
+        id: "aequalis",
+        nom: "AEQUALIS",
+        peur: "Certains élèves n'ont pas de connexion à la maison — c'est injuste",
+        nomDompte: "Aequalis le Juste",
+        levier: "L'équité numérique se construit, elle ne se subit pas",
+        description: "Le 1:1 à l'école, c'est une machine de qualité pour un prix rikiki. C'est aussi lutter contre la fracture numérique Le problème de connexion à domicile doit être pris en compte, mais il ne doit pas bloquer les usages en classe et une vraie éducation au numérique.",
+        exemplesCRBTP: [
+          "Tous les travaux lourds peuvent se faire en classe, sur le réseau de l'école.",
+          "Les apps Microsoft 365 fonctionnent hors ligne : OneNote, Word, Excel. Zéro blocage possible.",
+          "En Aide soignante : la fiche patient numérique se prépare en classe — l'élève sans connexion à la maison n'est pas désavantagé.",
+          "En Français : la rédaction se fait en classe sur Word — à la maison, il suffit de relire le texte enregistré hors ligne.",
+          "En Math : les exercices interactifs peuvent être faits en classe.",
+          "En Langue : les exercices audio et vidéo peuvent être faits en classe.",
+          "En FHG : la recherche documentaire se fait sur le réseau de l'école. À la maison, l'élève retravaille ses notes."
+        ]
+      },
+      {
+        id: "substitutor",
+        nom: "SUBSTITUTOR",
+        peur: "L'écran va remplacer le contact humain et la relation avec mes élèves",
+        nomDompte: "Substitutor le Médiateur",
+        levier: "Le numérique libère du temps pour l'humain — il ne le remplace pas",
+        description: "Ce que le numérique prend en charge (la trace, la correction, la recherche), il te le rend en temps de présence réelle avec tes élèves. L'outil gère le répétitif — toi tu investis dans la relation.",
+        exemplesCRBTP: [
+          "En Soin : la fiche de soin saisie sur tablette, c'est moins de papier et plus de temps pour accompagner l'élève dans sa relation au patient.",
+          "En Restauration : un retour écrit sur Teams la veille permet d'arriver en atelier avec un échange ciblé.",
+          "En Français : la correction automatique sur Word peut libèrer du temps pour discuter du style et des idées en face à face avec chaque élève.",
+          "En Math : les exercices auto-corrigés en ligne te montrent qui bloque — tu vas directement aider ceux qui en ont besoin au lieu de corriger pour toute la classe.",
+          "En Langue : les feedbacks audio enregistrés sur Teams remplacent les annotations écrites et créent un lien plus personnel avec l'élève.",
+          "En FHG : les QCM de vérification sur Forms se corrigent seuls — tu utilises ce temps pour animer un vrai débat en classe.",
+          "Règle d'or : chaque minute gagnée sur l'administratif grâce au numérique est une minute de plus pour regarder un élève dans les yeux."
+        ]
+      },
+      {
+        id: "evaluator",
+        nom: "ÉVALUATOR",
+        peur: "Comment savoir ce qu'ils ont vraiment fait eux-mêmes ?",
+        nomDompte: "Évaluator le Révélateur",
+        levier: "Évaluer le processus, pas seulement le produit",
+        description: "La vraie question n'est pas 'a-t-il triché ?' mais 'est-ce qu'il sait faire ?'. Le numérique offre des traces de processus que le papier n'a jamais pu capturer.",
+        exemplesCRBTP: [
+          "Historique de versions sur OneNote ou Word : tu peux voir comment le travail a évolué, pas juste le résultat final.",
+          "En Comptabilité : l'oral de 3 minutes après un exercice Excel : 'explique-moi ton raisonnement' — imparable et formateur.",
+          "Portfolio progressif sur Teams : en travaux de bureau, l'élève documente facilement ses productions depuis septembre. L'authenticité est dans la trajectoire.",
+          "En Français : l'historique Word montre les brouillons successifs d'une rédaction — tu évalues la progression, pas juste le texte final.",
+          "En Math : demander à l'élève d'expliquer sa démarche à l'oral après un exercice fait sur ordinateur — s'il sait le refaire, c'est acquis.",
+          "En Langue : l'élève enregistre plusieurs prises d'un oral — la comparaison entre la première et la dernière montre l'apprentissage réel.",
+          "En FHG : le journal de recherche sur OneNote trace chaque source consultée et chaque hypothèse testée — le processus parle plus que le résultat."
+        ]
+      }
+    ];
+
+    /* ======================================================
+       DONNÉES DES PERSONNAGES
+    ====================================================== */
+    const PERSONNAGES = [
+      { id: 1, nom: "Amara", desc: "Enseignante · 35 ans", skin: "#6B3520", acc: "#E4632E", hair: "#1a0800", genre: 'f' },
+      { id: 3, nom: "Lina", desc: "Enseignante · 28 ans", skin: "#C68642", acc: "#E3A535", hair: "#3d2000", genre: 'f' },
+      { id: 2, nom: "Marc", desc: "Enseignant · 50 ans", skin: "#F5D5B0", acc: "#127676", hair: "#888", genre: 'm' },
+      { id: 5, nom: "Hélène", desc: "Enseignante · 60 ans", skin: "#F5D5B0", acc: "#127676", hair: "#bbb", genre: 'f' },
+      { id: 4, nom: "James", desc: "Enseignant · 42 ans", skin: "#3D1A00", acc: "#E3A535", hair: "#1a0800", genre: 'm' },
+      { id: 6, nom: "Karim", desc: "Enseignant · 32 ans", skin: "#C68642", acc: "#127676", hair: "#3d2000", genre: 'm' },
+    ];
+
+    /* ======================================================
+       CONSTANTES DE JEU
+    ====================================================== */
+    const ZONE_TIR = {
+      spawn_x: 92,   // position initiale monstre (% depuis gauche)
+      seuil_x: 55,   // seuil zone de tir valide
+      perso_x: 14,   // position fixe du personnage
+      vitesse: 0.45  // % par tick (setInterval 50ms)
+    };
+    const TIMER_MS = 3000;
+
+    /* ======================================================
+       ÉTAT DU JEU
+    ====================================================== */
+    let G = {
+      state: 'welcome', // welcome|running|encounter|throwing|taming|revealing|gameover|end
+      character: null,
+      vies: 3,
+      monstreIdx: 0,
+      collection: [],
+      monstreX: ZONE_TIR.spawn_x,
+      playerX: 11,   // position horizontale du personnage (%)
+      ammo: 3,   // projectiles restants
+      animating: false,
+      jumping: false,
+      jumpT: 0,    // progression du saut (0→1)
+      jumpVX: 0,    // vélocité horizontale pendant le saut
+      jumped: false,  // monstre en cours de passage sous le saut
+      moveInt: null,
+      timerInt: null,
+      timerStart: null,
+    };
+
+    /* ======================================================
+       UTILITAIRES
+    ====================================================== */
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      // Afficher les touch controls uniquement pendant le jeu
+      if (typeof showTouchControls === 'function') {
+        showTouchControls(id === 'screen-game');
+      }
+    }
+
+    function updateModalState() {
+      const anyOpen = document.querySelector('#modal-intro.show, #modal-premonstre.show, #modal-reveal.show');
+      document.body.classList.toggle('modal-open', !!anyOpen);
+    }
+
+    // Observer les changements de classe sur les modals
+    const modalObserver = new MutationObserver(updateModalState);
+    ['modal-intro', 'modal-premonstre', 'modal-reveal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) modalObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    function flash(type) {
+      const el = document.getElementById('flash-overlay');
+      el.className = '';
+      void el.offsetWidth;
+      el.classList.add(type === 'red' ? 'flash-red' : 'flash-teal');
+    }
+
+    function showFeedback(msg, type, ms = 1100) {
+      const el = document.getElementById('feedback-text');
+      el.textContent = msg;
+      el.className = 'show ' + type;
+      setTimeout(() => { el.className = ''; }, ms);
+    }
+
+    function shakeApp() {
+      const app = document.getElementById('app');
+      app.style.animation = 'shake 0.4s ease-in-out';
+      setTimeout(() => { app.style.animation = ''; }, 400);
+    }
+
+    /* ======================================================
+       SVG — DÉCOR BRUXELLES (fond runner)
+    ====================================================== */
+    function svgBruxelles() {
+      // Bâtiments, fenêtres, lampadaires, sol
+      const B = (x, y, w, h, rx = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#0e2121"/>`;
+      const W = (x, y, w = 7, h = 9, op = 0.7) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1" fill="#127676" opacity="${op}"/>`;
+      const L = (x) =>
+        `<line x1="${x}" y1="190" x2="${x}" y2="215" stroke="#163535" stroke-width="3"/>
+     <path d="M${x - 11} 190 Q${x} 179 ${x + 11} 190" stroke="#127676" stroke-width="2" fill="none"/>
+     <circle cx="${x}" cy="188" r="4" fill="#127676" opacity="0.85"/>
+     <circle cx="${x}" cy="188" r="7" fill="#127676" opacity="0.15"/>`;
+
+      return `<svg viewBox="0 0 900 220" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#0D1617"/>
+        <stop offset="100%" stop-color="#0a2020"/>
+      </linearGradient>
+    </defs>
+    <rect width="900" height="220" fill="url(#sky)"/>
+    <!-- Étoiles -->
+    <circle cx="60"  cy="18" r="1"   fill="white" opacity=".4"/>
+    <circle cx="180" cy="30" r="1.4" fill="white" opacity=".35"/>
+    <circle cx="310" cy="12" r="1"   fill="white" opacity=".5"/>
+    <circle cx="450" cy="22" r="1.2" fill="white" opacity=".3"/>
+    <circle cx="600" cy="16" r="1"   fill="white" opacity=".45"/>
+    <circle cx="740" cy="32" r="1.4" fill="white" opacity=".35"/>
+    <circle cx="860" cy="10" r="1"   fill="white" opacity=".5"/>
+
+    <!-- Immeubles -->
+    ${B(0, 70, 75, 150)} ${B(10, 100, 60, 120)}
+    ${B(85, 55, 65, 165)} ${B(100, 85, 55, 135)}
+    ${B(160, 80, 85, 140)} ${B(175, 100, 65, 120)}
+    ${B(255, 45, 50, 175)} ${B(270, 75, 40, 145)}
+    ${B(315, 70, 80, 150)} ${B(330, 90, 65, 130)}
+    ${B(405, 50, 95, 170)} ${B(420, 80, 78, 140)}
+    ${B(510, 65, 58, 155)} ${B(525, 95, 48, 125)}
+    ${B(578, 48, 85, 172)} ${B(590, 78, 72, 142)}
+    ${B(673, 60, 72, 160)} ${B(688, 90, 60, 130)}
+    ${B(755, 45, 90, 175)} ${B(768, 70, 76, 150)}
+    ${B(855, 62, 45, 158)}
+
+    <!-- Fenêtres -->
+    ${W(12, 105)}${W(23, 105)}${W(34, 105)} ${W(12, 118)}${W(23, 118)}${W(34, 118)}
+    ${W(12, 131)}${W(23, 131)}
+    ${W(92, 70)} ${W(103, 70)}${W(114, 70)} ${W(92, 83)} ${W(103, 83)}${W(114, 83)}
+    ${W(92, 96)} ${W(103, 96)}
+    ${W(167, 95)}${W(179, 95)}${W(191, 95)} ${W(167, 108)}${W(179, 108)}${W(191, 108)}
+    ${W(263, 60)}${W(274, 60)} ${W(263, 73)}${W(274, 73)} ${W(263, 86)}${W(274, 86)}
+    ${W(322, 85)}${W(334, 85)}${W(346, 85)} ${W(322, 98)}${W(334, 98)}${W(346, 98)}
+    ${W(413, 65)}${W(425, 65)}${W(437, 65)}${W(449, 65)} ${W(413, 79)}${W(425, 79)}${W(437, 79)}${W(449, 79)}
+    ${W(413, 93)}${W(425, 93)}${W(437, 93)}
+    ${W(516, 80)}${W(528, 80)} ${W(516, 93)}${W(528, 93)}
+    ${W(585, 63)}${W(597, 63)}${W(609, 63)} ${W(585, 76)}${W(597, 76)}${W(609, 76)}
+    ${W(680, 75)}${W(692, 75)}${W(704, 75)} ${W(680, 88)}${W(692, 88)}${W(704, 88)}
+    ${W(762, 60)}${W(774, 60)}${W(786, 60)} ${W(762, 73)}${W(774, 73)}${W(786, 73)}
+    ${W(762, 86)}${W(774, 86)}
+
+    <!-- Arcs Art Nouveau -->
+    <path d="M 85 210 Q 118 182 152 210" fill="none" stroke="#163535" stroke-width="2.5"/>
+    <path d="M 315 210 Q 355 178 395 210" fill="none" stroke="#163535" stroke-width="2.5"/>
+    <path d="M 578 210 Q 621 174 664 210" fill="none" stroke="#163535" stroke-width="2.5"/>
+    <path d="M 755 210 Q 800 176 845 210" fill="none" stroke="#163535" stroke-width="2.5"/>
+
+    <!-- Néons teal sur bâtiments -->
+    <rect x="92"  y="67" width="55" height="2" rx="1" fill="#127676" opacity=".55"/>
+    <rect x="413" y="62" width="90" height="2" rx="1" fill="#127676" opacity=".5"/>
+    <rect x="585" y="60" width="65" height="2" rx="1" fill="#127676" opacity=".55"/>
+    <rect x="762" y="57" width="75" height="2" rx="1" fill="#127676" opacity=".5"/>
+
+    <!-- Sol -->
+    <rect y="210" width="900" height="10" fill="#091515"/>
+    <rect y="208" width="900" height="3"  fill="#127676" opacity=".25"/>
+
+    <!-- Lampadaires -->
+    ${L(140)}${L(320)}${L(500)}${L(680)}${L(860)}
+  </svg>`;
+    }
+
+    /* ======================================================
+       SVG — PERSONNAGE (sélection + runner)
+    ====================================================== */
+    function svgPerso(p, running = false) {
+      const s = p.skin, a = p.acc, h = p.hair;
+      const cls = running ? ' class="' : '';
+      const LL = running ? 'class="leg-l"' : '';
+      const LR = running ? 'class="leg-r"' : '';
+      const AL = running ? 'class="arm-l"' : '';
+      const AR = running ? 'class="arm-r"' : '';
+
+      // Accessoire cyberpunk selon personnage
+      let headExtra = '';
+      let bodyExtra = '';
+      switch (p.id) {
+        case 1: // Lunettes HUD orange, tresse
+          headExtra = `
+        <rect x="19" y="24" width="10" height="6" rx="2" fill="${a}" opacity=".9"/>
+        <rect x="33" y="24" width="10" height="6" rx="2" fill="${a}" opacity=".9"/>
+        <line x1="13" y1="27" x2="19" y2="27" stroke="${a}" stroke-width="1.5"/>
+        <line x1="43" y1="27" x2="50" y2="27" stroke="${a}" stroke-width="1.5"/>
+        <path d="M35 38 Q39 46 37 56" stroke="${h}" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="37" cy="58" r="3" fill="${a}"/>`;
+          break;
+        case 2: // Implant temporal teal, veste circuits
+          headExtra = `
+        <circle cx="49" cy="22" r="5" fill="${a}" opacity=".85"/>
+        <line x1="43" y1="22" x2="49" y2="22" stroke="${a}" stroke-width="1.5"/>
+        <circle cx="49" cy="22" r="2" fill="#0D1617"/>`;
+          bodyExtra = `
+        <line x1="24" y1="57" x2="40" y2="57" stroke="${a}" stroke-width=".9"/>
+        <line x1="24" y1="61" x2="36" y2="61" stroke="${a}" stroke-width=".9"/>
+        <line x1="24" y1="65" x2="40" y2="65" stroke="${a}" stroke-width=".9"/>`;
+          break;
+        case 3: // Bras mécanique + badge holo
+          headExtra = `
+        <circle cx="44" cy="20" r="6" fill="${a}" opacity=".65"/>
+        <text x="41" y="24" font-size="6" fill="#0D1617" font-family="monospace">1:1</text>`;
+          bodyExtra = `
+        <rect x="39" y="56" width="10" height="22" rx="3" fill="#333" stroke="${a}" stroke-width="1.2"/>
+        <line x1="41" y1="64" x2="47" y2="64" stroke="${a}" stroke-width=".9"/>
+        <line x1="41" y1="68" x2="47" y2="68" stroke="${a}" stroke-width=".9"/>
+        <circle cx="44" cy="74" r="3" fill="${a}"/>`;
+          break;
+        case 4: // Casque audio rétro
+          headExtra = `
+        <path d="M16 20 Q16 8 31 8 Q47 8 47 20" stroke="#222" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <rect x="12" y="18" width="8" height="10" rx="3" fill="${a}"/>
+        <rect x="43" y="18" width="8" height="10" rx="3" fill="${a}"/>`;
+          break;
+        case 5: // Canne connectée, broches de données
+          headExtra = `
+        <line x1="22" y1="22" x2="40" y2="22" stroke="silver" stroke-width="1.5" opacity=".6"/>
+        <circle cx="26" cy="20" r="4" fill="white" opacity=".15"/>`;
+          bodyExtra = `
+        <line x1="40" y1="78" x2="44" y2="98" stroke="${a}" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="44" cy="100" r="4" fill="${a}"/>
+        <circle cx="22" cy="58" r="3" fill="${a}" opacity=".8"/>
+        <circle cx="22" cy="65" r="3" fill="${a}" opacity=".6"/>`;
+          break;
+        case 6: // Yeux augmentés teal, tablette
+          headExtra = `
+        <circle cx="25" cy="27" r="3" fill="white"/>
+        <circle cx="37" cy="27" r="3" fill="white"/>
+        <circle cx="25" cy="27" r="2" fill="${a}" opacity=".85"/>
+        <circle cx="37" cy="27" r="2" fill="${a}" opacity=".85"/>
+        <circle cx="25.5" cy="27.3" r="1" fill="#0D1617"/>
+        <circle cx="37.5" cy="27.3" r="1" fill="#0D1617"/>
+        <path d="M20 24 Q25 22 30 24" stroke="${a}" stroke-width="1.2" fill="none"/>
+        <path d="M32 24 Q37 22 42 24" stroke="${a}" stroke-width="1.2" fill="none"/>`;
+          bodyExtra = `
+        <rect x="22" y="58" width="14" height="18" rx="2" fill="#111" stroke="${a}" stroke-width="1.4"/>
+        <line x1="24" y1="63" x2="34" y2="63" stroke="${a}" stroke-width=".8"/>
+        <line x1="24" y1="66" x2="34" y2="66" stroke="${a}" stroke-width=".8"/>
+        <line x1="24" y1="69" x2="30" y2="69" stroke="${a}" stroke-width=".8"/>`;
+          break;
+      }
+
+      const eyes = (p.id !== 6) ? `
+    <circle cx="25" cy="27" r="2.5" fill="white"/>
+    <circle cx="37" cy="27" r="2.5" fill="white"/>
+    <circle cx="25.8" cy="27.5" r="1.2" fill="#111"/>
+    <circle cx="37.8" cy="27.5" r="1.2" fill="#111"/>` : '';
+
+      return `<svg viewBox="0 0 62 108" xmlns="http://www.w3.org/2000/svg">
+    <!-- Jambes -->
+    <g ${LL}><rect x="23" y="76" width="7" height="22" rx="3" fill="${s}"/><rect x="22" y="95" width="9" height="5" rx="2" fill="#1a1a1a"/></g>
+    <g ${LR}><rect x="32" y="76" width="7" height="22" rx="3" fill="${s}"/><rect x="31" y="95" width="9" height="5" rx="2" fill="#1a1a1a"/></g>
+    <!-- Corps -->
+    <rect x="21" y="49" width="20" height="28" rx="4" fill="${a}" opacity=".9"/>
+    ${bodyExtra}
+    <!-- Bras -->
+    <g ${AL}><rect x="9"  y="51" width="13" height="5" rx="2.5" fill="${s}"/></g>
+    <g ${AR}><rect x="40" y="51" width="13" height="5" rx="2.5" fill="${s}"/></g>
+    <!-- Cou -->
+    <rect x="28" y="41" width="6" height="10" rx="2" fill="${s}"/>
+    <!-- Cheveux -->
+    <path d="M15 24 Q15 8 31 8 Q47 8 47 24" fill="${h}"/>
+    <!-- Tête -->
+    <ellipse cx="31" cy="27" rx="15.5" ry="16" fill="${s}"/>
+    <!-- Yeux -->
+    ${eyes}
+    <!-- Nez -->
+    <ellipse cx="31" cy="33" rx="1.5" ry="1" fill="${s === '#F5D5B0' ? '#d4a076' : '#8B4513'}"/>
+    <!-- Bouche -->
+    <path d="M27 37 Q31 40 35 37" stroke="${s === '#F5D5B0' ? '#c4905a' : '#7a3a10'}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- Accessoires tête -->
+    ${headExtra}
+  </svg>`;
+    }
+
+    /* ======================================================
+       SVG — MONSTRES
+    ====================================================== */
+    function svgMonstre(m, dompte = false) {
+      switch (m.id) {
+        case 'distractus': return svgDistrActus(dompte);
+        case 'pannus': return svgPannus(dompte);
+        case 'aequalis': return svgAequalis(dompte);
+        case 'substitutor': return svgSubstitutor(dompte);
+        case 'evaluator': return svgEvaluator(dompte);
+        default: return `<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" fill="#E4632E"/></svg>`;
+      }
+    }
+
+    /* DISTRACTUS — Téléphone géant avec tentacules */
+    function svgDistrActus(d) {
+      const bg = d ? '#127676' : '#E4632E';
+      const bg2 = d ? '#0a5555' : '#aa2200';
+      const tent = d ? '#0a4444' : '#8B0000';
+      const eye = d ? 'white' : '#FFCC00';
+      const eyePupil = d ? bg : '#CC0000';
+      const mouth = d
+        ? `<path d="M31 58 Q40 64 49 58" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+        : `<path d="M31 58 Q40 52 49 58" stroke="#FFCC00" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+
+      return `<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+    <!-- Tentacules -->
+    <path d="M20 50 Q4 38 7 23 Q10 13 18 18"  stroke="${tent}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M25 56 Q4 62 2 77"               stroke="${tent}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M60 50 Q76 38 73 23 Q70 13 62 18" stroke="${tent}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M55 56 Q76 62 78 77"             stroke="${tent}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- Corps téléphone -->
+    <rect x="18" y="16" width="44" height="64" rx="8" fill="${bg2}" stroke="${bg}" stroke-width="2.5"/>
+    <!-- Écran -->
+    <rect x="22" y="22" width="36" height="50" rx="5" fill="${d ? '#073333' : '#111'}"/>
+    <!-- Contenu écran -->
+    ${d
+          ? `<text x="40" y="44" text-anchor="middle" font-size="14">📚</text>
+         <text x="40" y="60" text-anchor="middle" font-size="8" fill="${bg}">LEARN</text>`
+          : `<text x="40" y="44" text-anchor="middle" font-size="18">🎵</text>
+         <rect x="26" y="52" width="28" height="3" rx="1" fill="#FF4444" opacity=".8"/>
+         <rect x="26" y="58" width="20" height="3" rx="1" fill="#FF4444" opacity=".5"/>`}
+    <!-- Yeux -->
+    <circle cx="31" cy="35" r="5" fill="${eye}"/>
+    <circle cx="49" cy="35" r="5" fill="${eye}"/>
+    <circle cx="${d ? 31 : 32}" cy="${d ? 35 : 36}" r="2.5" fill="${eyePupil}"/>
+    <circle cx="${d ? 49 : 50}" cy="${d ? 35 : 36}" r="2.5" fill="${eyePupil}"/>
+    <!-- Bouche -->
+    ${mouth}
+    <!-- Auréole si dompté -->
+    ${d ? `<circle cx="40" cy="10" r="6" fill="none" stroke="#E3A535" stroke-width="2.5" opacity=".8"/>` : ''}
+  </svg>`;
+    }
+
+    /* PANNUS — Engrenage avec visage paniqué */
+    function svgPannus(d) {
+      const bg = d ? '#E3A535' : '#8B0000';
+      const gear = d ? '#b07a10' : '#4a0000';
+      // Dents d'engrenage
+      let teeth = '';
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2;
+        const tx = 40 + Math.cos(a) * 34, ty = 45 + Math.sin(a) * 34;
+        teeth += `<rect x="${tx - 5}" y="${ty - 5}" width="10" height="10" fill="${gear}" transform="rotate(${i * 45} ${tx} ${ty})"/>`;
+      }
+      const eyeCol = d ? '#0D1617' : '#FF3333';
+      const mouth = d
+        ? `<path d="M31 53 Q40 59 49 53" stroke="#0D1617" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+        : `<path d="M30 58 Q40 50 50 58" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+      const extras = d
+        ? `<line x1="24" y1="32" x2="33" y2="33" stroke="${gear}" stroke-width="2"/>
+       <line x1="47" y1="33" x2="56" y2="32" stroke="${gear}" stroke-width="2"/>
+       <circle cx="40" cy="10" r="6" fill="none" stroke="#E3A535" stroke-width="2.5" opacity=".8"/>`
+        : `<line x1="23" y1="32" x2="33" y2="35" stroke="white" stroke-width="2.5"/>
+       <line x1="47" y1="35" x2="57" y2="32" stroke="white" stroke-width="2.5"/>
+       <ellipse cx="58" cy="27" rx="4" ry="6" fill="#4488FF" opacity=".7"/>
+       <ellipse cx="62" cy="34" rx="3" ry="4" fill="#4488FF" opacity=".5"/>`;
+
+      return `<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+    ${teeth}
+    <circle cx="40" cy="45" r="30" fill="${bg}"/>
+    <circle cx="40" cy="45" r="11" fill="${gear}"/>
+    <circle cx="29" cy="40" r="7"  fill="white"/>
+    <circle cx="51" cy="40" r="7"  fill="white"/>
+    <circle cx="${d ? 29 : 31}" cy="${d ? 40 : 42}" r="4" fill="${eyeCol}"/>
+    <circle cx="${d ? 51 : 53}" cy="${d ? 40 : 42}" r="4" fill="${eyeCol}"/>
+    ${extras}
+    ${mouth}
+  </svg>`;
+    }
+
+    /* AEQUALIS — Balance déséquilibrée */
+    function svgAequalis(d) {
+      const bg = d ? '#127676' : '#7B3CB5';
+      const pl = d ? '#0a4f4f' : '#5a2d8a';
+      const rot = d ? 0 : 14;
+
+      return `<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+    <g transform="rotate(${rot} 40 50)">
+      <line x1="40" y1="14" x2="40" y2="70" stroke="${bg}" stroke-width="4" stroke-linecap="round"/>
+      <line x1="8"  y1="33" x2="72" y2="33" stroke="${bg}" stroke-width="4" stroke-linecap="round"/>
+      <line x1="13" y1="33" x2="11" y2="54" stroke="${bg}" stroke-width="2"/>
+      <line x1="67" y1="33" x2="69" y2="54" stroke="${bg}" stroke-width="2"/>
+      <ellipse cx="11" cy="55" rx="14" ry="6" fill="${pl}" stroke="${bg}" stroke-width="2"/>
+      <ellipse cx="69" cy="55" rx="14" ry="6" fill="${pl}" stroke="${bg}" stroke-width="2"/>
+      <path d="M28 72 L52 72 L54 80 L26 80 Z" fill="${pl}" stroke="${bg}" stroke-width="2"/>
+    </g>
+    <!-- Visage -->
+    <circle cx="40" cy="43" r="14" fill="${bg}"/>
+    <circle cx="34" cy="40" r="3"  fill="white"/>
+    <circle cx="46" cy="40" r="3"  fill="white"/>
+    <circle cx="${d ? 34 : 35}" cy="${d ? 40 : 41}" r="1.5" fill="${d ? '#0D1617' : bg}"/>
+    <circle cx="${d ? 46 : 47}" cy="${d ? 40 : 41}" r="1.5" fill="${d ? '#0D1617' : bg}"/>
+    ${d
+          ? `<path d="M33 47 Q40 52 47 47" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+         <circle cx="40" cy="10" r="5" fill="none" stroke="#E3A535" stroke-width="2.5" opacity=".8"/>`
+          : `<path d="M33 49 Q40 44 47 49" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+         <line x1="27" y1="33" x2="34" y2="35" stroke="white" stroke-width="2"/>
+         <line x1="46" y1="35" x2="53" y2="33" stroke="white" stroke-width="2"/>`}
+  </svg>`;
+    }
+
+    /* SUBSTITUTOR — Robot avec cœur barré */
+    function svgSubstitutor(d) {
+      const bg = d ? '#E3A535' : '#006400';
+      const bg2 = d ? '#b07a10' : '#003800';
+
+      return `<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+    <!-- Antenne -->
+    <line x1="40" y1="4" x2="40" y2="18" stroke="${bg}" stroke-width="3"/>
+    <circle cx="40" cy="3" r="4" fill="${d ? '#E3A535' : '#00FF00'}" opacity=".9"/>
+    <!-- Tête robot -->
+    <rect x="19" y="18" width="42" height="34" rx="6" fill="${bg2}" stroke="${bg}" stroke-width="2.5"/>
+    <!-- Yeux LED -->
+    <rect x="25" y="25" width="12" height="9" rx="2" fill="${d ? '#127676' : '#00EE00'}" opacity=".9"/>
+    <rect x="43" y="25" width="12" height="9" rx="2" fill="${d ? '#127676' : '#00EE00'}" opacity=".9"/>
+    <!-- Bouche -->
+    ${d
+          ? `<path d="M27 41 Q40 48 53 41" stroke="${bg}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+          : `<rect x="25" y="38" width="30" height="8" rx="3" fill="#001800" stroke="${bg}" stroke-width="1.5"/>
+         <line x1="31" y1="38" x2="31" y2="46" stroke="${bg}" stroke-width="1"/>
+         <line x1="37" y1="38" x2="37" y2="46" stroke="${bg}" stroke-width="1"/>
+         <line x1="43" y1="38" x2="43" y2="46" stroke="${bg}" stroke-width="1"/>
+         <line x1="49" y1="38" x2="49" y2="46" stroke="${bg}" stroke-width="1"/>`}
+    <!-- Corps -->
+    <rect x="22" y="54" width="36" height="28" rx="5" fill="${bg2}" stroke="${bg}" stroke-width="2"/>
+    <!-- Cœur -->
+    <path d="M40 63 C38 59 31 59 31 66 C31 71 40 77 40 77 C40 77 49 71 49 66 C49 59 42 59 40 63 Z" fill="${d ? '#E4632E' : '#CC0000'}"/>
+    ${!d ? `<line x1="29" y1="59" x2="51" y2="77" stroke="white" stroke-width="3" stroke-linecap="round"/>` : ''}
+    <!-- Bras -->
+    <rect x="9"  y="56" width="13" height="6" rx="3" fill="${bg2}" stroke="${bg}" stroke-width="1.8"/>
+    <rect x="58" y="56" width="13" height="6" rx="3" fill="${bg2}" stroke="${bg}" stroke-width="1.8"/>
+    ${d ? `<circle cx="40" cy="10" r="5" fill="none" stroke="#E3A535" stroke-width="2.5" opacity=".8"/>` : ''}
+  </svg>`;
+    }
+
+    /* ÉVALUATOR — Œil géant avec point d'interrogation */
+    function svgEvaluator(d) {
+      const bg = d ? '#127676' : '#8B4513';
+      const iris = d ? '#E3A535' : '#CC6600';
+      const pupil = d ? '#0D1617' : '#FF4400';
+
+      return `<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+    <!-- Paupières -->
+    <path d="M7 46 Q40 ${d ? 14 : 10} 73 46" fill="${bg}"/>
+    <path d="M7 46 Q40 ${d ? 78 : 82} 73 46" fill="${bg}"/>
+    <!-- Blanc de l'œil -->
+    <ellipse cx="40" cy="46" rx="33" ry="${d ? 23 : 27}" fill="white"/>
+    <!-- Iris -->
+    <circle cx="40" cy="46" r="${d ? 17 : 19}" fill="${iris}"/>
+    <!-- Pupille -->
+    <circle cx="40" cy="46" r="${d ? 9 : 11}" fill="${pupil}"/>
+    <!-- Reflet -->
+    <circle cx="33" cy="40" r="3.5" fill="white" opacity=".65"/>
+    <!-- Symbole -->
+    ${d
+          ? `<path d="M36 40 Q36 45 40 45 Q44 45 44 49 Q44 53 40 53" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+         <circle cx="40" cy="57" r="2" fill="white"/>`
+          : `<text x="40" y="53" text-anchor="middle" font-size="17" font-weight="bold" fill="white">?</text>`}
+    <!-- Cils menaçants (non dompté) / auréole (dompté) -->
+    ${d
+          ? `<circle cx="40" cy="10" r="6" fill="none" stroke="#E3A535" stroke-width="2.5" opacity=".8"/>`
+          : `<line x1="14" y1="30" x2="9"  y2="18" stroke="${bg}" stroke-width="3" stroke-linecap="round"/>
+         <line x1="25" y1="22" x2="22" y2="10" stroke="${bg}" stroke-width="3" stroke-linecap="round"/>
+         <line x1="40" y1="19" x2="40" y2="7"  stroke="${bg}" stroke-width="3" stroke-linecap="round"/>
+         <line x1="55" y1="22" x2="58" y2="10" stroke="${bg}" stroke-width="3" stroke-linecap="round"/>
+         <line x1="66" y1="30" x2="71" y2="18" stroke="${bg}" stroke-width="3" stroke-linecap="round"/>`}
+  </svg>`;
+    }
+
+    /* SVG cœur vie */
+    function svgCoeur(plein) {
+      const c = plein ? '#E4632E' : '#333';
+      return `<span class="life-icon${plein ? '' : ' lost'}">
+    <svg width="26" height="26" viewBox="0 0 24 24">
+      <path d="M12 21C12 21 3 14 3 8C3 5 5.5 3 8 3C9.5 3 11 4 12 5C13 4 14.5 3 16 3C18.5 3 21 5 21 8C21 14 12 21 12 21Z" fill="${c}"/>
+    </svg>
+  </span>`;
+    }
+
+    /* ======================================================
+       JAUGE DE MUNITIONS
+    ====================================================== */
+    const MAX_AMMO = 3;
+
+    function svgAmmo() {
+      return `<svg viewBox="0 0 26 20" class="ammo-icon"><rect x="1" y="1" width="24" height="18" rx="3" fill="#E3A535" stroke="#E4632E" stroke-width="1.5"/><line x1="13" y1="1" x2="13" y2="19" stroke="#E4632E" stroke-width="1.2"/></svg>`;
+    }
+
+    function renderAmmo() {
+      const el = document.getElementById('ammo');
+      el.innerHTML = `<span id="ammo-label">LIVRES</span>` +
+        Array.from({ length: MAX_AMMO }, (_, i) =>
+          `<span class="ammo-icon${i >= G.ammo ? ' spent' : ''}">${svgAmmo()}</span>`
+        ).join('');
+    }
+
+    /* ======================================================
+       INITIALISATION DES ÉCRANS
+    ====================================================== */
+    function initWelcome() {
+      document.getElementById('welcome-monsters').innerHTML =
+        MONSTRES.map(m =>
+          `<div class="welcome-monster-thumb" title="${m.nom}">${svgMonstre(m, false)}</div>`
+        ).join('');
+    }
+
+    function lancerApresIntro() {
+      document.getElementById('modal-intro').classList.remove('show');
+      lancerMonstre();
+    }
+
+    function initSelect() {
+      document.getElementById('character-grid').innerHTML =
+        PERSONNAGES.map(p => `
+      <div class="char-card" onclick="selectChar(${p.id})" id="char-${p.id}">
+        ${svgPerso(p)}
+        <div class="char-name">${p.nom}</div>
+        <div class="char-desc">${p.desc}</div>
+      </div>`
+        ).join('');
+    }
+
+    function selectChar(id) {
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById(`char-${id}`).classList.add('selected');
+      G.character = PERSONNAGES.find(p => p.id === id);
+      const btn = document.getElementById('btn-play');
+      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+    }
+
+    /* ======================================================
+       DÉMARRER LE JEU
+    ====================================================== */
+    function startGame() {
+      if (!G.character) return;
+
+      // Init HUD — vies
+      document.getElementById('lives').innerHTML = [1, 2, 3].map(() => svgCoeur(true)).join('');
+
+      // Init HUD — progression
+      document.getElementById('progress-bar').innerHTML =
+        MONSTRES.map((_, i) => `<div class="prog-seg" id="seg-${i}"></div>`).join('');
+
+      // Personnage dans le runner
+      G.playerX = 11;
+      const playerEl = document.getElementById('player-char');
+      playerEl.innerHTML = svgPerso(G.character, true);
+      playerEl.style.left = G.playerX + '%';
+
+      // Fond défilant (deux copies)
+      const bg = svgBruxelles();
+      document.getElementById('bg-scroll').innerHTML =
+        `<div>${bg}</div><div>${bg}</div>`;
+
+      // Munitions
+      G.ammo = MAX_AMMO;
+      renderAmmo();
+
+      // Vider la collection
+      document.getElementById('collection-items').innerHTML = '';
+
+      showScreen('screen-game');
+      document.getElementById(`seg-${G.monstreIdx}`)?.classList.add('current');
+
+      // Afficher le briefing de mission
+      document.getElementById('modal-intro').classList.add('show');
+    }
+
+    /* ======================================================
+       GESTION DES MONSTRES
+    ====================================================== */
+    function lancerMonstre() {
+      G.animating = false;
+      G.state = 'running';
+      G.monstreX = ZONE_TIR.spawn_x;
+      G.jumping = false;
+      G.jumpT = 0;
+      G.jumpVX = 0;
+      const pEl = document.getElementById('player-char');
+      if (pEl) { pEl.classList.remove('jumping'); pEl.style.transform = ''; }
+      clearInterval(G.moveInt);
+      clearInterval(G.timerInt);
+
+      const m = MONSTRES[G.monstreIdx];
+
+      // Préparer le monstre (caché, pas encore animé)
+      const wrap = document.getElementById('monster-wrap');
+      wrap.innerHTML = `<div class="monster-peur-bubble">"${m.peur}"</div>${svgMonstre(m, false)}`;
+      wrap.style.left = G.monstreX + '%';
+      wrap.style.opacity = '0';
+
+      // Timer caché, ligne inactive
+      document.getElementById('timer-wrap').classList.add('hidden');
+      document.getElementById('hint-text').textContent =
+        'ESPACE pour tirer · ↑ pour sauter par-dessus le monstre';
+
+      // Afficher le pop-up de présentation
+      document.getElementById('premonstre-svg').innerHTML = svgMonstre(m, false);
+      document.getElementById('premonstre-nom').textContent = m.nom;
+      document.getElementById('premonstre-peur').textContent = `"${m.peur}"`;
+      document.getElementById('modal-premonstre').classList.add('show');
+    }
+
+    function demarrerMonstre() {
+      document.getElementById('modal-premonstre').classList.remove('show');
+      const m = MONSTRES[G.monstreIdx];
+      const wrap = document.getElementById('monster-wrap');
+
+      // Nom du monstre
+      const tag = document.getElementById('monster-name-tag');
+      tag.textContent = m.nom;
+      tag.classList.add('show');
+
+      // Faire apparaître le monstre
+      wrap.style.opacity = '1';
+      wrap.style.animation = 'monsterIn 0.5s ease-out';
+      setTimeout(() => { wrap.style.animation = ''; }, 500);
+
+      // Lancer le mouvement
+      G.moveInt = setInterval(deplacerMonstre, 50);
+    }
+
+    function deplacerMonstre() {
+      if (G.state !== 'running' && G.state !== 'encounter') return;
+
+      // Monstre avance à vitesse constante
+      G.monstreX -= ZONE_TIR.vitesse;
+      document.getElementById('monster-wrap').style.left = G.monstreX + '%';
+
+      // Déplacement du personnage
+      const playerEl = document.getElementById('player-char');
+
+      if (G.jumping) {
+        // En l'air : vélocité accumulée (cloche modifiable)
+        if (KEYS.right) G.jumpVX = Math.min(G.jumpVX + 0.3, 2.5);
+        else if (KEYS.left) G.jumpVX = Math.max(G.jumpVX - 0.3, -2.5);
+        else G.jumpVX *= 0.8;
+
+        G.playerX = Math.max(3, Math.min(75, G.playerX + G.jumpVX));
+        playerEl.style.left = G.playerX + '%';
+
+        // Courbe en cloche (sin) pour Y
+        G.jumpT += 1 / 20;
+        const tClamped = Math.min(G.jumpT, 1);
+        const yOff = -150 * Math.sin(Math.PI * tClamped);
+        playerEl.style.transform = `translateY(${yOff}px)`;
+
+        // Fin du saut
+        if (G.jumpT >= 1) {
+          G.jumping = false;
+          G.jumpT = 0;
+          G.jumpVX = 0;
+          playerEl.classList.remove('jumping');
+          playerEl.style.transform = '';
+        }
+      } else {
+        // Au sol : déplacement libre dans le décor
+        if (KEYS.left) G.playerX = Math.max(3, G.playerX - 0.7);
+        if (KEYS.right) G.playerX = Math.min(75, G.playerX + 0.7);
+        playerEl.style.left = G.playerX + '%';
+      }
+
+      // Entrée dans la zone de tir (seulement si pas en train d'être sauté)
+      if (G.state === 'running' && !G.jumped && G.monstreX <= ZONE_TIR.seuil_x) {
+        G.state = 'encounter';
+        entrerEncounter();
+      }
+
+      // Monstre sauté : il sort à gauche et réapparaît à droite
+      if (G.jumped && G.monstreX <= -14) {
+        G.jumped = false;
+        G.monstreX = ZONE_TIR.spawn_x;
+        const wrap = document.getElementById('monster-wrap');
+        wrap.style.left = G.monstreX + '%';
+        wrap.style.animation = 'monsterIn 0.5s ease-out';
+        setTimeout(() => { wrap.style.animation = ''; }, 500);
+        G.state = 'running';
+        // Recharger 1 projectile
+        if (G.ammo < MAX_AMMO) { G.ammo++; renderAmmo(); }
+        return;
+      }
+
+      // Collision physique : le monstre touche le personnage au sol
+      if (!G.jumping && G.monstreX > G.playerX - 8 && G.monstreX < G.playerX + 6) {
+        G.jumped = false;
+        clearInterval(G.moveInt);
+        handleTimeout();
+      }
+    }
+
+    function entrerEncounter() {
+      document.getElementById('timer-wrap').classList.remove('hidden');
+      document.getElementById('hint-text').textContent = 'Maintenant ! ESPACE pour tirer · ↑ pour esquiver !';
+      demarrerTimer();
+    }
+
+    function demarrerTimer() {
+      clearInterval(G.timerInt);
+      G.timerStart = Date.now();
+      const bar = document.getElementById('timer-bar');
+      bar.style.width = '100%';
+      bar.style.background = '#E3A535';
+
+      G.timerInt = setInterval(() => {
+        const ratio = 1 - (Date.now() - G.timerStart) / TIMER_MS;
+        if (ratio <= 0) {
+          clearInterval(G.timerInt);
+          bar.style.width = '0%';
+          return; // pas de perte de vie — seul le contact physique compte
+        }
+        bar.style.width = (ratio * 100) + '%';
+        bar.style.background = ratio < 0.3 ? '#CC0000' : ratio < 0.6 ? '#E4632E' : '#E3A535';
+      }, 40);
+    }
+
+    /* ======================================================
+       SAUT
+    ====================================================== */
+    function jump() {
+      if (G.jumping) return;
+      if (G.state !== 'running' && G.state !== 'encounter') return;
+
+      // Lancer le saut (physique JS)
+      G.jumping = true;
+      G.jumpT = 0;
+      G.jumpVX = KEYS.right ? 1.5 : KEYS.left ? -1.5 : 0;
+      document.getElementById('player-char').classList.add('jumping');
+
+      const dist = G.monstreX - G.playerX;
+
+      if (dist > 52) {
+        // Trop tôt : saut sans effet sur le monstre
+        showFeedback('Trop tôt !', 'miss', 1000);
+      } else {
+        // Fenêtre valide : le monstre passe sous le héros et continue
+        G.jumped = true;
+        G.state = 'running';
+        clearInterval(G.timerInt);
+        document.getElementById('timer-wrap').classList.add('hidden');
+        showFeedback('Esquivé !', 'hit', 900);
+      }
+    }
+
+    /* ======================================================
+       CLAVIER
+    ====================================================== */
+    const KEYS = { left: false, right: false };
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') { e.preventDefault(); shoot(); }
+      if (e.code === 'ArrowUp') { e.preventDefault(); jump(); }
+      if (e.code === 'ArrowLeft') { e.preventDefault(); KEYS.left = true; }
+      if (e.code === 'ArrowRight') { e.preventDefault(); KEYS.right = true; }
+    });
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowLeft') KEYS.left = false;
+      if (e.code === 'ArrowRight') KEYS.right = false;
+    });
+
+    /* ======================================================
+       CONTRÔLES TACTILES (mobile)
+    ====================================================== */
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const touchControls = document.getElementById('touch-controls');
+
+    function showTouchControls(visible) {
+      if (isTouchDevice) {
+        touchControls.classList.toggle('show', visible);
+        document.body.classList.toggle('touch-active', visible);
+      }
+    }
+
+    if (isTouchDevice) {
+      // Prevent zooming on double-tap
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) e.preventDefault();
+      }, { passive: false });
+
+      const tLeft = document.getElementById('touch-left');
+      const tRight = document.getElementById('touch-right');
+      const tJump = document.getElementById('touch-jump');
+      const tShoot = document.getElementById('touch-shoot');
+
+      // Directions : maintien continu
+      function bindHold(btn, keyName) {
+        btn.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          KEYS[keyName] = true;
+          btn.classList.add('pressed');
+        }, { passive: false });
+        btn.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          KEYS[keyName] = false;
+          btn.classList.remove('pressed');
+        });
+        btn.addEventListener('touchcancel', () => {
+          KEYS[keyName] = false;
+          btn.classList.remove('pressed');
+        });
+      }
+      bindHold(tLeft, 'left');
+      bindHold(tRight, 'right');
+
+      // Sauter : appui simple
+      tJump.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        tJump.classList.add('pressed');
+        jump();
+      }, { passive: false });
+      tJump.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        tJump.classList.remove('pressed');
+      });
+
+      // Tirer : appui simple
+      tShoot.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        tShoot.classList.add('pressed');
+        shoot();
+      }, { passive: false });
+      tShoot.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        tShoot.classList.remove('pressed');
+      });
+
+      // Désactiver le clic sur le stage en mobile (éviter double tir)
+      document.getElementById('runner-stage').removeAttribute('onclick');
+
+      // Afficher les contrôles tactiles dans l'intro
+      document.querySelectorAll('.intro-controls-keyboard').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.intro-controls-touch').forEach(el => el.style.display = 'flex');
+    }
+
+    /* ======================================================
+       TIR — collision en temps réel
+    ====================================================== */
+    function shoot() {
+      if (G.animating) return;
+      if (G.state !== 'running' && G.state !== 'encounter') return;
+      if (G.ammo <= 0) { showFeedback('Plus de livres !', 'miss', 900); return; }
+
+      G.ammo--;
+      renderAmmo();
+      G.animating = true;
+      animerLivre();
+    }
+
+    function animerLivre() {
+      const book = document.getElementById('book');
+      const stage = document.getElementById('runner-stage');
+      const H = stage.offsetHeight;
+      const W = stage.offsetWidth;
+
+      const sX = G.playerX + 5;
+      const sY = H - 90;
+      const eX = Math.min(sX + 25, 96);
+      const arc = 90;
+      const dur = 480;
+      const t0 = performance.now();
+      const monsterW = (88 / W) * 100; // largeur monstre en %
+
+      book.style.cssText = `display:block; left:${sX}%; top:${sY}px; opacity:1; transform:rotate(0deg)`;
+
+      function step(now) {
+        // Annuler si état a changé (timeout, etc.)
+        if (G.state !== 'running' && G.state !== 'encounter') {
+          book.style.display = 'none'; book.style.opacity = '1';
+          G.animating = false;
+          return;
+        }
+
+        const t = Math.min((now - t0) / dur, 1);
+        const x = sX + (eX - sX) * t;
+        const y = sY - arc * Math.sin(Math.PI * t);
+        book.style.left = x + '%';
+        book.style.top = y + 'px';
+        book.style.transform = `rotate(${t * 360}deg)`;
+
+        // Collision : le livre touche le monstre (chevauchement X + livre pas trop haut)
+        const bookCenter = x + 1.5;
+        const monsterCenter = G.monstreX + monsterW / 2;
+        const hauteur = sY - y; // hauteur du livre au-dessus du sol
+
+        if (t > 0.5 && Math.abs(bookCenter - monsterCenter) < (monsterW / 2 + 3) && hauteur < 55) {
+          // TOUCHÉ !
+          book.style.display = 'none'; book.style.opacity = '1';
+          G.animating = false;
+          clearInterval(G.moveInt);
+          clearInterval(G.timerInt);
+          flash('teal');
+          showFeedback('Touché !', 'hit', 900);
+          const wrap = document.getElementById('monster-wrap');
+          wrap.style.animation = 'shake 0.4s ease-in-out';
+          setTimeout(() => { wrap.style.animation = ''; lancerDomptage(); }, 400);
+          return;
+        }
+
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Raté — le livre a fini sa course sans toucher le monstre
+          book.style.display = 'none'; book.style.opacity = '1';
+          G.animating = false;
+          showFeedback('Raté !', 'miss', 900);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ======================================================
+       DOMPTAGE
+    ====================================================== */
+    function lancerDomptage() {
+      G.state = 'taming';
+      const wrap = document.getElementById('monster-wrap');
+      const m = MONSTRES[G.monstreIdx];
+
+      wrap.classList.add('taming');
+      wrap.style.transition = '';
+
+      setTimeout(() => {
+        wrap.classList.remove('taming');
+        wrap.innerHTML = svgMonstre(m, true);
+        wrap.style.filter = 'drop-shadow(0 0 14px #127676)';
+        wrap.style.animation = 'monsterBounce 0.55s ease-in-out 2';
+        setTimeout(() => { wrap.style.animation = ''; afficherReveal(m); }, 1100);
+      }, 700);
+    }
+
+    /* ======================================================
+       PANNEAU DE RÉVÉLATION
+    ====================================================== */
+    function afficherReveal(m) {
+      G.state = 'revealing';
+      document.getElementById('modal-nom-initial').textContent = m.nom;
+      document.getElementById('modal-nom-dompte').textContent = m.nomDompte;
+      document.getElementById('modal-peur').textContent = `"${m.peur}"`;
+      document.getElementById('modal-levier-title').textContent = m.levier;
+      document.getElementById('modal-levier-desc').textContent = m.description;
+      document.getElementById('modal-exemples').innerHTML = m.exemplesCRBTP.map(e => `<li>${e}</li>`).join('');
+      document.getElementById('modal-svg').innerHTML = svgMonstre(m, true);
+      document.getElementById('modal-reveal').classList.add('show');
+    }
+
+    function continuerApresReveal() {
+      document.getElementById('modal-reveal').classList.remove('show');
+      const m = MONSTRES[G.monstreIdx];
+
+      // Ajouter à la collection
+      G.collection.push(m.id);
+      const div = document.createElement('div');
+      div.className = 'col-item';
+      div.title = m.nomDompte;
+      div.innerHTML = svgMonstre(m, true);
+      document.getElementById('collection-items').appendChild(div);
+
+      // Barre de progression
+      const seg = document.getElementById(`seg-${G.monstreIdx}`);
+      if (seg) { seg.classList.remove('current'); seg.classList.add('done'); }
+
+      G.monstreIdx++;
+
+      if (G.monstreIdx >= MONSTRES.length) {
+        afficherFin();
+        return;
+      }
+
+      // Prochain monstre
+      document.getElementById(`seg-${G.monstreIdx}`)?.classList.add('current');
+      const wrap = document.getElementById('monster-wrap');
+      wrap.style.transition = 'transform 0.45s, opacity 0.45s';
+      wrap.style.transform = 'translateX(120px) scale(0.5)';
+      wrap.style.opacity = '0';
+      document.getElementById('monster-name-tag').classList.remove('show');
+
+      setTimeout(() => {
+        wrap.style.transition = '';
+        wrap.style.transform = '';
+        wrap.style.opacity = '1';
+        wrap.style.filter = '';
+        lancerMonstre();
+      }, 500);
+    }
+
+    /* ======================================================
+       TIMEOUT / PERTE DE VIE
+    ====================================================== */
+    function handleTimeout() {
+      // N'agir que si on est encore en phase de combat (encounter ou running)
+      if (G.state !== 'encounter' && G.state !== 'running') return;
+      G.state = 'timeout';
+      G.animating = true;
+      clearInterval(G.moveInt);
+      clearInterval(G.timerInt);
+
+      const wrap = document.getElementById('monster-wrap');
+      wrap.style.animation = 'monsterAttack 0.65s ease-in-out';
+      flash('red');
+      shakeApp();
+
+      setTimeout(() => {
+        wrap.style.animation = '';
+        perdreVie();
+      }, 700);
+    }
+
+    function perdreVie() {
+      G.vies--;
+      // Mettre à jour l'icône correspondante
+      const icons = document.getElementById('lives').querySelectorAll('.life-icon');
+      if (icons[G.vies]) icons[G.vies].classList.add('lost');
+
+      if (G.vies <= 0) {
+        setTimeout(() => afficherGameOver(), 400);
+      } else {
+        showFeedback(`-1 vie !`, 'timeout', 1300);
+        setTimeout(() => {
+          G.animating = false;
+          document.getElementById('monster-wrap').style.filter = '';
+          lancerMonstre();
+        }, 1000);
+      }
+    }
+
+    /* ======================================================
+       GAME OVER
+    ====================================================== */
+    function afficherGameOver() {
+      G.state = 'gameover';
+      clearInterval(G.moveInt);
+      clearInterval(G.timerInt);
+      document.getElementById('modal-reveal').classList.remove('show');
+      const gcEl = document.getElementById('gameover-collection');
+      gcEl.innerHTML = G.collection.length === 0
+        ? `<p style="opacity:.5;font-style:italic">Aucun monstre dompté pour l'instant...</p>`
+        : G.collection.map(id => {
+          const m = MONSTRES.find(x => x.id === id);
+          return `<div style="width:52px;height:52px;border:2px solid #127676;border-radius:8px;overflow:hidden;background:#0D1617" title="${m.nomDompte}">${svgMonstre(m, true)}</div>`;
+        }).join('');
+      showScreen('screen-gameover');
+    }
+
+    function reessayer() {
+      // Reprend au monstre en cours, 3 vies + munitions rechargées
+      G.vies = 3;
+      G.ammo = MAX_AMMO;
+      G.animating = false;
+      G.state = 'running';
+      document.getElementById('lives').innerHTML = [1, 2, 3].map(() => svgCoeur(true)).join('');
+      renderAmmo();
+      showScreen('screen-game');
+      lancerMonstre();
+    }
+
+    function retourSelect() {
+      clearInterval(G.moveInt);
+      clearInterval(G.timerInt);
+      G = {
+        state: 'select', character: null, vies: 3, monstreIdx: 0, collection: [],
+        monstreX: ZONE_TIR.spawn_x, playerX: 11, ammo: 5,
+        animating: false, jumping: false, jumpT: 0, jumpVX: 0, jumped: false,
+        moveInt: null, timerInt: null, timerStart: null
+      };
+      // Désactiver le bouton jouer
+      const btn = document.getElementById('btn-play');
+      btn.disabled = true; btn.style.opacity = '.4'; btn.style.cursor = 'not-allowed';
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('modal-reveal').classList.remove('show');
+      showScreen('screen-select');
+    }
+
+    /* ======================================================
+       FIN DU JEU
+    ====================================================== */
+    function afficherFin() {
+      G.state = 'end';
+      clearInterval(G.moveInt);
+      clearInterval(G.timerInt);
+
+      // Danse de la joie : personnage + monstres domptés
+      const danceEl = document.getElementById('end-dance');
+      const monstresHtml = MONSTRES.map(m =>
+        `<div class="dance-item">
+      ${svgMonstre(m, true)}
+      <span class="dance-name">${m.nomDompte}</span>
+    </div>`
+      );
+      // Insérer le héros au milieu
+      const mid = Math.floor(monstresHtml.length / 2);
+      monstresHtml.splice(mid, 0,
+        `<div class="dance-item dance-hero">
+      ${svgPerso(G.character, false)}
+      <span class="dance-name">${G.character.nom}</span>
+    </div>`
+      );
+      danceEl.innerHTML = monstresHtml.join('');
+
+      document.getElementById('end-collection').innerHTML = '';
+      showScreen('screen-end');
+    }
+
+    /* ======================================================
+       MUSIQUE CHIPTUNE (Web Audio API)
+    ====================================================== */
+    const Music = (() => {
+      let ctx, gainMaster;
+      let playing = false;
+      let loopTimeout = null;
+      let muted = false;
+      let activeNodes = []; // tous les oscillateurs/sources en cours
+
+      // Notes → fréquences
+      const N = {
+        C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
+        C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+        C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99, A5:880.00,
+        R:0
+      };
+
+      // Mélodie principale
+      const melody = [
+        'E5','E5','R','E5','R','C5','E5','R',
+        'G5','R','R','R','G4','R','R','R',
+        'C5','R','R','G4','R','R','E4','R',
+        'R','A4','R','B4','R','A4','R','R',
+        'G4','E5','G5','A5','R','F5','G5','R',
+        'E5','R','C5','D5','B4','R','R','R',
+        'C5','R','R','G4','R','R','E4','R',
+        'R','A4','R','B4','R','A4','R','R',
+        'G4','E5','G5','A5','R','F5','G5','R',
+        'E5','R','C5','D5','B4','R','R','R',
+      ];
+
+      const bass = [
+        'C3','C3','R','C3','R','C3','E3','R',
+        'G3','R','R','R','G3','R','R','R',
+        'C3','R','R','G3','R','R','E3','R',
+        'R','A3','R','B3','R','A3','R','R',
+        'E3','C4','E3','A3','R','F3','G3','R',
+        'E3','R','C3','D3','G3','R','R','R',
+        'C3','R','R','G3','R','R','E3','R',
+        'R','A3','R','B3','R','A3','R','R',
+        'E3','C4','E3','A3','R','F3','G3','R',
+        'E3','R','C3','D3','G3','R','R','R',
+      ];
+
+      const BPM = 280;
+      const stepDur = 60 / BPM;
+
+      function ensureCtx() {
+        if (!ctx) {
+          ctx = new (window.AudioContext || window.webkitAudioContext)();
+          gainMaster = ctx.createGain();
+          gainMaster.gain.value = 0.35;
+          gainMaster.connect(ctx.destination);
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+      }
+
+      function playNote(freq, startTime, duration, vol, type) {
+        if (freq === 0) return;
+        const osc = ctx.createOscillator();
+        const env = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        env.gain.setValueAtTime(vol, startTime);
+        env.gain.exponentialRampToValueAtTime(0.001, startTime + duration * 0.9);
+        osc.connect(env);
+        env.connect(gainMaster);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+        activeNodes.push(osc);
+        osc.onended = () => { const i = activeNodes.indexOf(osc); if (i >= 0) activeNodes.splice(i, 1); };
+      }
+
+      function playNoise(startTime, duration) {
+        const len = Math.max(1, Math.floor(ctx.sampleRate * duration));
+        const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.12, startTime);
+        env.gain.exponentialRampToValueAtTime(0.001, startTime + duration * 0.8);
+        src.connect(env);
+        env.connect(gainMaster);
+        src.start(startTime);
+        src.stop(startTime + duration);
+        activeNodes.push(src);
+        src.onended = () => { const i = activeNodes.indexOf(src); if (i >= 0) activeNodes.splice(i, 1); };
+      }
+
+      function killAll() {
+        activeNodes.forEach(n => { try { n.stop(0); } catch(e) {} });
+        activeNodes = [];
+      }
+
+      function scheduleLoop() {
+        if (!playing) return;
+        const now = ctx.currentTime + 0.05;
+        const total = melody.length;
+        const loopDur = total * stepDur;
+
+        for (let i = 0; i < total; i++) {
+          const t = now + i * stepDur;
+          const dur = stepDur * 0.8;
+          playNote(N[melody[i]], t, dur, 0.3, 'square');
+          playNote(N[bass[i]], t, dur * 1.1, 0.2, 'triangle');
+          if (i % 4 === 0) playNoise(t, 0.05);
+          if (i % 4 === 2) playNoise(t, 0.025);
+        }
+
+        loopTimeout = setTimeout(scheduleLoop, loopDur * 1000 - 80);
+      }
+
+      function start() {
+        if (muted) return;
+        if (playing) return; // déjà en cours → ne pas relancer
+        ensureCtx();
+        playing = true;
+        scheduleLoop();
+      }
+
+      function stop() {
+        if (!playing) return;
+        playing = false;
+        if (loopTimeout) { clearTimeout(loopTimeout); loopTimeout = null; }
+        killAll(); // couper immédiatement tous les sons en cours
+      }
+
+      function toggle() {
+        muted = !muted;
+        if (muted) stop();
+        return !muted;
+      }
+
+      function isMuted() { return muted; }
+
+      return { start, stop, toggle, isMuted };
+    })();
+
+    function toggleMute() {
+      const on = Music.toggle();
+      document.getElementById('btn-mute').textContent = on ? '🔊' : '🔇';
+      if (on && (G.state === 'running' || G.state === 'encounter')) Music.start();
+    }
+
+    // Intégrer la musique aux transitions de jeu
+    const _origDemarrerMonstre = demarrerMonstre;
+    demarrerMonstre = function() {
+      _origDemarrerMonstre();
+      Music.start();
+    };
+
+    const _origLancerMonstre = lancerMonstre;
+    lancerMonstre = function() {
+      _origLancerMonstre();
+      // Pause pendant le modal pré-monstre
+      Music.stop();
+    };
+
+    // Observer les modals pour pause/reprise musique
+    const musicObserver = new MutationObserver(() => {
+      const revealOpen = document.getElementById('modal-reveal').classList.contains('show');
+      const premonstreOpen = document.getElementById('modal-premonstre').classList.contains('show');
+      const introOpen = document.getElementById('modal-intro').classList.contains('show');
+      if (revealOpen || premonstreOpen || introOpen) {
+        Music.stop();
+      } else if (G.state === 'running' || G.state === 'encounter') {
+        Music.start();
+      }
+    });
+    ['modal-reveal', 'modal-premonstre', 'modal-intro'].forEach(id => {
+      musicObserver.observe(document.getElementById(id), { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // Stopper à game over et fin
+    const _origGameOver = afficherGameOver;
+    afficherGameOver = function() { Music.stop(); _origGameOver(); };
+    const _origFin = afficherFin;
+    afficherFin = function() { Music.stop(); _origFin(); };
+    const _origRetourSelect = retourSelect;
+    retourSelect = function() { Music.stop(); _origRetourSelect(); };
+
+    /* ======================================================
+       INIT
+    ====================================================== */
+    initWelcome();
+    initSelect();
+  </script>
+</body>
+
+</html>
