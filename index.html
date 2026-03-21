@@ -331,7 +331,7 @@
 
     .btn-mute {
       background: none;
-      border: 1px solid rgba(18,118,118,0.3);
+      border: 1px solid rgba(18, 118, 118, 0.3);
       border-radius: 6px;
       font-size: 1rem;
       cursor: pointer;
@@ -339,7 +339,10 @@
       line-height: 1;
       transition: opacity 0.2s;
     }
-    .btn-mute:hover { opacity: 0.7; }
+
+    .btn-mute:hover {
+      opacity: 0.7;
+    }
 
     #timer-wrap {
       width: 110px;
@@ -1352,25 +1355,36 @@
       padding: 30px;
       gap: 18px;
     }
+
     #rotate-overlay .rotate-icon {
       font-size: 3.5rem;
       animation: rotateHint 2s ease-in-out infinite;
     }
+
     #rotate-overlay p {
       font-family: var(--font-title);
       font-size: 1.1rem;
       color: var(--jaune);
       letter-spacing: 0.06em;
     }
+
     #rotate-overlay .rotate-sub {
       font-family: var(--font-body);
       font-size: 0.8rem;
       color: var(--paper);
       opacity: 0.6;
     }
+
     @keyframes rotateHint {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(90deg); }
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform: rotate(90deg);
+      }
     }
 
     /* ====================================================
@@ -1388,18 +1402,28 @@
       justify-content: space-between;
       align-items: flex-end;
     }
-    #touch-controls.show { display: flex; }
-    /* Masquer les contrôles quand un modal est ouvert */
-    body.modal-open #touch-controls { display: none !important; }
 
-    .touch-zone { display: flex; gap: 8px; pointer-events: auto; }
+    #touch-controls.show {
+      display: flex;
+    }
+
+    /* Masquer les contrôles quand un modal est ouvert */
+    body.modal-open #touch-controls {
+      display: none !important;
+    }
+
+    .touch-zone {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
 
     .touch-btn {
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      border: 2px solid rgba(18,118,118,0.6);
-      background: rgba(13,22,23,0.75);
+      border: 2px solid rgba(18, 118, 118, 0.6);
+      background: rgba(13, 22, 23, 0.75);
       color: var(--jaune);
       font-size: 1.4rem;
       font-family: var(--font-title);
@@ -1414,19 +1438,24 @@
       -webkit-backdrop-filter: blur(4px);
       transition: transform 0.08s, background 0.08s;
     }
-    .touch-btn:active, .touch-btn.pressed {
+
+    .touch-btn:active,
+    .touch-btn.pressed {
       transform: scale(0.9);
-      background: rgba(18,118,118,0.5);
+      background: rgba(18, 118, 118, 0.5);
       border-color: var(--jaune);
     }
+
     .touch-btn-large {
       width: 68px;
       height: 68px;
       font-size: 1.1rem;
-      border-color: rgba(227,165,53,0.6);
+      border-color: rgba(227, 165, 53, 0.6);
     }
-    .touch-btn-large:active, .touch-btn-large.pressed {
-      background: rgba(227,165,53,0.35);
+
+    .touch-btn-large:active,
+    .touch-btn-large.pressed {
+      background: rgba(227, 165, 53, 0.35);
       border-color: var(--jaune);
     }
 
@@ -1437,6 +1466,7 @@
       .character-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+
       #runner-stage {
         height: 270px;
       }
@@ -1444,99 +1474,348 @@
 
     /* Portrait phones: show rotate overlay */
     @media (max-width: 768px) and (orientation: portrait) {
-      #rotate-overlay { display: flex !important; }
-      #app { display: none !important; }
+      #rotate-overlay {
+        display: flex !important;
+      }
+
+      #app {
+        display: none !important;
+      }
     }
 
     /* Landscape phones & small tablets */
     @media (max-height: 500px) {
+
       /* Compact all screens */
-      .screen { min-height: 100vh; min-height: 100dvh; }
-      #app { min-height: 100vh; min-height: 100dvh; }
+      .screen {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+
+      #app {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
 
       /* Welcome */
-      #screen-welcome { padding: 16px 20px; }
-      #screen-welcome h1 { font-size: clamp(1.6rem, 6vw, 2.8rem); }
-      .tagline { margin: 10px auto 16px; font-size: 0.78rem; }
-      .welcome-monsters { margin-bottom: 16px; gap: 8px; }
-      .welcome-monster-thumb { width: 40px; height: 40px; }
+      #screen-welcome {
+        padding: 16px 20px;
+      }
+
+      #screen-welcome h1 {
+        font-size: clamp(1.6rem, 6vw, 2.8rem);
+      }
+
+      .tagline {
+        margin: 10px auto 16px;
+        font-size: 0.78rem;
+      }
+
+      .welcome-monsters {
+        margin-bottom: 16px;
+        gap: 8px;
+      }
+
+      .welcome-monster-thumb {
+        width: 40px;
+        height: 40px;
+      }
 
       /* Select */
-      #screen-select { padding: 12px 16px; }
-      #screen-select h2 { font-size: 1.1rem; margin-bottom: 4px; }
-      #screen-select .sub { margin-bottom: 10px; font-size: 0.75rem; }
-      .character-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 480px; }
-      .char-card { padding: 8px 6px 6px; border-radius: 8px; }
-      .char-card svg { width: 44px; height: 44px; }
-      .char-name { font-size: 0.6rem; }
-      .char-desc { font-size: 0.55rem; }
-      .select-actions { margin-top: 12px; }
+      #screen-select {
+        padding: 12px 16px;
+      }
+
+      #screen-select h2 {
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+
+      #screen-select .sub {
+        margin-bottom: 10px;
+        font-size: 0.75rem;
+      }
+
+      .character-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        max-width: 480px;
+      }
+
+      .char-card {
+        padding: 8px 6px 6px;
+        border-radius: 8px;
+      }
+
+      .char-card svg {
+        width: 44px;
+        height: 44px;
+      }
+
+      .char-name {
+        font-size: 0.6rem;
+      }
+
+      .char-desc {
+        font-size: 0.55rem;
+      }
+
+      .select-actions {
+        margin-top: 12px;
+      }
 
       /* HUD */
-      #hud { padding: 4px 10px; gap: 6px; }
-      .life-icon svg { width: 18px; height: 18px; }
-      .btn-mute { font-size: 0.8rem; padding: 1px 4px; }
-      #ammo-label { font-size: 0.5rem; }
-      .ammo-icon { width: 11px; height: 8px; }
-      #timer-wrap { width: 80px; }
+      #hud {
+        padding: 4px 10px;
+        gap: 6px;
+      }
+
+      .life-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .btn-mute {
+        font-size: 0.8rem;
+        padding: 1px 4px;
+      }
+
+      #ammo-label {
+        font-size: 0.5rem;
+      }
+
+      .ammo-icon {
+        width: 11px;
+        height: 8px;
+      }
+
+      #timer-wrap {
+        width: 80px;
+      }
 
       /* Stage */
-      #runner-stage { height: calc(100dvh - 90px); min-height: 180px; }
-      body.touch-active #runner-stage { height: calc(100dvh - 155px); }
-      #player-char { width: 44px; bottom: 30px; }
-      #monster-wrap { width: 68px; bottom: 22px; }
-      .monster-peur-bubble { font-size: 0.52rem; max-width: 150px; min-width: 90px; padding: 3px 6px; }
-      #monster-name-tag { font-size: 0.65rem; }
-      #feedback-text { font-size: 1.1rem; }
-      #hint-text { display: none; }
-      #book { width: 20px; height: 15px; }
+      #runner-stage {
+        height: calc(100dvh - 90px);
+        min-height: 180px;
+      }
+
+      body.touch-active #runner-stage {
+        height: calc(100dvh - 155px);
+      }
+
+      #player-char {
+        width: 44px;
+        bottom: 30px;
+      }
+
+      #monster-wrap {
+        width: 68px;
+        bottom: 22px;
+      }
+
+      .monster-peur-bubble {
+        font-size: 0.52rem;
+        max-width: 150px;
+        min-width: 90px;
+        padding: 3px 6px;
+      }
+
+      #monster-name-tag {
+        font-size: 0.65rem;
+      }
+
+      #feedback-text {
+        font-size: 1.1rem;
+      }
+
+      #hint-text {
+        display: none;
+      }
+
+      #book {
+        width: 20px;
+        height: 15px;
+      }
 
       /* Collection */
-      #collection { padding: 4px 10px; min-height: 44px; }
-      #collection-label { font-size: 0.55rem; }
-      .col-item { width: 32px; height: 32px; border-radius: 5px; }
+      #collection {
+        padding: 4px 10px;
+        min-height: 44px;
+      }
+
+      #collection-label {
+        font-size: 0.55rem;
+      }
+
+      .col-item {
+        width: 32px;
+        height: 32px;
+        border-radius: 5px;
+      }
 
 
       /* Modals */
-      .intro-card, .modal-card, .premonstre-card { max-height: 92dvh; }
-      .intro-card { max-width: 90vw; }
-      .intro-header { padding: 12px 14px 10px; }
-      .intro-header h3 { font-size: 1rem; margin-bottom: 6px; }
-      .intro-header p { font-size: 0.75rem; }
-      .intro-body { padding: 10px 14px; }
-      .intro-body h4 { font-size: 0.8rem; }
-      .intro-controls li { font-size: 0.72rem; gap: 6px; }
-      .intro-key { font-size: 0.65rem; padding: 1px 5px; }
-      .intro-footer { padding: 8px 14px; }
-      .intro-footer .btn { font-size: 0.85rem; padding: 9px 20px; }
+      .intro-card,
+      .modal-card,
+      .premonstre-card {
+        max-height: 92dvh;
+      }
 
-      .premonstre-svg { width: 60px; height: 60px; margin-bottom: 10px; }
-      .premonstre-alerte { font-size: 0.65rem; }
-      .premonstre-nom { font-size: clamp(1.3rem, 5vw, 2rem); margin-bottom: 14px; }
-      .premonstre-peur { font-size: clamp(0.85rem, 2.5vw, 1.1rem); margin-bottom: 18px; padding-left: 12px; }
+      .intro-card {
+        max-width: 90vw;
+      }
 
-      .modal-card { max-width: 92vw; }
-      .modal-header { padding: 10px 14px 8px; gap: 10px; }
-      .modal-header-svg { width: 42px; height: 42px; }
-      .nom-initial { font-size: 0.65rem; }
-      .nom-dompte { font-size: 1.05rem; }
-      .modal-body { padding: 10px 14px; }
-      .peur-text { font-size: 0.75rem; margin-bottom: 8px; }
-      .levier-title { font-size: 0.9rem; }
-      .levier-desc { font-size: 0.78rem; margin-bottom: 10px; }
-      .exemples-list li { font-size: 0.72rem; }
-      .modal-footer { padding: 8px 14px; }
+      .intro-header {
+        padding: 12px 14px 10px;
+      }
+
+      .intro-header h3 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .intro-header p {
+        font-size: 0.75rem;
+      }
+
+      .intro-body {
+        padding: 10px 14px;
+      }
+
+      .intro-body h4 {
+        font-size: 0.8rem;
+      }
+
+      .intro-controls li {
+        font-size: 0.72rem;
+        gap: 6px;
+      }
+
+      .intro-key {
+        font-size: 0.65rem;
+        padding: 1px 5px;
+      }
+
+      .intro-footer {
+        padding: 8px 14px;
+      }
+
+      .intro-footer .btn {
+        font-size: 0.85rem;
+        padding: 9px 20px;
+      }
+
+      .premonstre-svg {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+      }
+
+      .premonstre-alerte {
+        font-size: 0.65rem;
+      }
+
+      .premonstre-nom {
+        font-size: clamp(1.3rem, 5vw, 2rem);
+        margin-bottom: 14px;
+      }
+
+      .premonstre-peur {
+        font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+        margin-bottom: 18px;
+        padding-left: 12px;
+      }
+
+      .modal-card {
+        max-width: 92vw;
+      }
+
+      .modal-header {
+        padding: 10px 14px 8px;
+        gap: 10px;
+      }
+
+      .modal-header-svg {
+        width: 42px;
+        height: 42px;
+      }
+
+      .nom-initial {
+        font-size: 0.65rem;
+      }
+
+      .nom-dompte {
+        font-size: 1.05rem;
+      }
+
+      .modal-body {
+        padding: 10px 14px;
+      }
+
+      .peur-text {
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+      }
+
+      .levier-title {
+        font-size: 0.9rem;
+      }
+
+      .levier-desc {
+        font-size: 0.78rem;
+        margin-bottom: 10px;
+      }
+
+      .exemples-list li {
+        font-size: 0.72rem;
+      }
+
+      .modal-footer {
+        padding: 8px 14px;
+      }
 
       /* Game over & End */
-      #screen-gameover, #screen-end { padding: 20px 18px; }
-      #screen-gameover h2 { font-size: clamp(2rem, 8vw, 3.5rem); }
-      .go-msg { font-size: 0.8rem; margin: 8px auto 16px; }
-      #screen-end h2 { font-size: clamp(1.2rem, 4vw, 2rem); }
-      .conclusion { font-size: 0.8rem; margin-bottom: 16px; }
-      .dance-item svg { width: 44px; height: 44px; }
-      .dance-hero svg { width: 54px; height: 54px; }
-      .dance-name { font-size: 0.5rem; }
-      #end-dance { gap: 10px; margin-bottom: 14px; }
+      #screen-gameover,
+      #screen-end {
+        padding: 20px 18px;
+      }
+
+      #screen-gameover h2 {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+      }
+
+      .go-msg {
+        font-size: 0.8rem;
+        margin: 8px auto 16px;
+      }
+
+      #screen-end h2 {
+        font-size: clamp(1.2rem, 4vw, 2rem);
+      }
+
+      .conclusion {
+        font-size: 0.8rem;
+        margin-bottom: 16px;
+      }
+
+      .dance-item svg {
+        width: 44px;
+        height: 44px;
+      }
+
+      .dance-hero svg {
+        width: 54px;
+        height: 54px;
+      }
+
+      .dance-name {
+        font-size: 0.5rem;
+      }
+
+      #end-dance {
+        gap: 10px;
+        margin-bottom: 14px;
+      }
     }
   </style>
 </head>
@@ -1928,12 +2207,12 @@
        DONNÉES DES PERSONNAGES
     ====================================================== */
     const PERSONNAGES = [
-      { id: 1, nom: "Amara", desc: "Enseignante · 35 ans", skin: "#6B3520", acc: "#E4632E", hair: "#1a0800", genre: 'f' },
-      { id: 3, nom: "Lina", desc: "Enseignante · 28 ans", skin: "#C68642", acc: "#E3A535", hair: "#3d2000", genre: 'f' },
-      { id: 2, nom: "Marc", desc: "Enseignant · 50 ans", skin: "#F5D5B0", acc: "#127676", hair: "#888", genre: 'm' },
-      { id: 5, nom: "Hélène", desc: "Enseignante · 60 ans", skin: "#F5D5B0", acc: "#127676", hair: "#bbb", genre: 'f' },
-      { id: 4, nom: "James", desc: "Enseignant · 42 ans", skin: "#3D1A00", acc: "#E3A535", hair: "#1a0800", genre: 'm' },
-      { id: 6, nom: "Karim", desc: "Enseignant · 32 ans", skin: "#C68642", acc: "#127676", hair: "#3d2000", genre: 'm' },
+      { id: 1, nom: "Amara", desc: " Enseignante de français · 35 ans", skin: "#6B3520", acc: "#E4632E", hair: "#1a0800", genre: 'f' },
+      { id: 3, nom: "Lina", desc: "Enseignante d'anglais· 28 ans", skin: "#C68642", acc: "#E3A535", hair: "#3d2000", genre: 'f' },
+      { id: 2, nom: "Marc", desc: "Enseignant d'histoire-géographie · 50 ans", skin: "#F5D5B0", acc: "#127676", hair: "#888", genre: 'm' },
+      { id: 5, nom: "Hélène", desc: "Enseignante d'éducation physique · 67 ans", skin: "#F5D5B0", acc: "#127676", hair: "#bbb", genre: 'f' },
+      { id: 4, nom: "James", desc: "Enseignant de mathématiques· 42 ans", skin: "#3D1A00", acc: "#E3A535", hair: "#1a0800", genre: 'm' },
+      { id: 6, nom: "Karim", desc: "Enseignant de restauration · 32 ans", skin: "#C68642", acc: "#127676", hair: "#3d2000", genre: 'm' },
     ];
 
     /* ======================================================
@@ -3090,37 +3369,37 @@
 
       // Notes → fréquences
       const N = {
-        C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
-        C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
-        C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99, A5:880.00,
-        R:0
+        C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+        C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+        C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00,
+        R: 0
       };
 
       // Mélodie principale
       const melody = [
-        'E5','E5','R','E5','R','C5','E5','R',
-        'G5','R','R','R','G4','R','R','R',
-        'C5','R','R','G4','R','R','E4','R',
-        'R','A4','R','B4','R','A4','R','R',
-        'G4','E5','G5','A5','R','F5','G5','R',
-        'E5','R','C5','D5','B4','R','R','R',
-        'C5','R','R','G4','R','R','E4','R',
-        'R','A4','R','B4','R','A4','R','R',
-        'G4','E5','G5','A5','R','F5','G5','R',
-        'E5','R','C5','D5','B4','R','R','R',
+        'E5', 'E5', 'R', 'E5', 'R', 'C5', 'E5', 'R',
+        'G5', 'R', 'R', 'R', 'G4', 'R', 'R', 'R',
+        'C5', 'R', 'R', 'G4', 'R', 'R', 'E4', 'R',
+        'R', 'A4', 'R', 'B4', 'R', 'A4', 'R', 'R',
+        'G4', 'E5', 'G5', 'A5', 'R', 'F5', 'G5', 'R',
+        'E5', 'R', 'C5', 'D5', 'B4', 'R', 'R', 'R',
+        'C5', 'R', 'R', 'G4', 'R', 'R', 'E4', 'R',
+        'R', 'A4', 'R', 'B4', 'R', 'A4', 'R', 'R',
+        'G4', 'E5', 'G5', 'A5', 'R', 'F5', 'G5', 'R',
+        'E5', 'R', 'C5', 'D5', 'B4', 'R', 'R', 'R',
       ];
 
       const bass = [
-        'C3','C3','R','C3','R','C3','E3','R',
-        'G3','R','R','R','G3','R','R','R',
-        'C3','R','R','G3','R','R','E3','R',
-        'R','A3','R','B3','R','A3','R','R',
-        'E3','C4','E3','A3','R','F3','G3','R',
-        'E3','R','C3','D3','G3','R','R','R',
-        'C3','R','R','G3','R','R','E3','R',
-        'R','A3','R','B3','R','A3','R','R',
-        'E3','C4','E3','A3','R','F3','G3','R',
-        'E3','R','C3','D3','G3','R','R','R',
+        'C3', 'C3', 'R', 'C3', 'R', 'C3', 'E3', 'R',
+        'G3', 'R', 'R', 'R', 'G3', 'R', 'R', 'R',
+        'C3', 'R', 'R', 'G3', 'R', 'R', 'E3', 'R',
+        'R', 'A3', 'R', 'B3', 'R', 'A3', 'R', 'R',
+        'E3', 'C4', 'E3', 'A3', 'R', 'F3', 'G3', 'R',
+        'E3', 'R', 'C3', 'D3', 'G3', 'R', 'R', 'R',
+        'C3', 'R', 'R', 'G3', 'R', 'R', 'E3', 'R',
+        'R', 'A3', 'R', 'B3', 'R', 'A3', 'R', 'R',
+        'E3', 'C4', 'E3', 'A3', 'R', 'F3', 'G3', 'R',
+        'E3', 'R', 'C3', 'D3', 'G3', 'R', 'R', 'R',
       ];
 
       const BPM = 280;
@@ -3171,7 +3450,7 @@
       }
 
       function killAll() {
-        activeNodes.forEach(n => { try { n.stop(0); } catch(e) {} });
+        activeNodes.forEach(n => { try { n.stop(0); } catch (e) { } });
         activeNodes = [];
       }
 
@@ -3227,13 +3506,13 @@
 
     // Intégrer la musique aux transitions de jeu
     const _origDemarrerMonstre = demarrerMonstre;
-    demarrerMonstre = function() {
+    demarrerMonstre = function () {
       _origDemarrerMonstre();
       Music.start();
     };
 
     const _origLancerMonstre = lancerMonstre;
-    lancerMonstre = function() {
+    lancerMonstre = function () {
       _origLancerMonstre();
       // Pause pendant le modal pré-monstre
       Music.stop();
@@ -3256,11 +3535,11 @@
 
     // Stopper à game over et fin
     const _origGameOver = afficherGameOver;
-    afficherGameOver = function() { Music.stop(); _origGameOver(); };
+    afficherGameOver = function () { Music.stop(); _origGameOver(); };
     const _origFin = afficherFin;
-    afficherFin = function() { Music.stop(); _origFin(); };
+    afficherFin = function () { Music.stop(); _origFin(); };
     const _origRetourSelect = retourSelect;
-    retourSelect = function() { Music.stop(); _origRetourSelect(); };
+    retourSelect = function () { Music.stop(); _origRetourSelect(); };
 
     /* ======================================================
        INIT
