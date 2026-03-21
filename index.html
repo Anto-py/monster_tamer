@@ -2560,12 +2560,14 @@
       const phase = Math.floor(tick / 10) % 2; // 0 ou 1, alterne toutes les 0.5s
 
       switch (G.monstreIdx) {
-        case 1: // Pannus — alternance vitesse normale / arrêt
-          return phase === 0 ? base : 0;
+        case 1: { // Pannus — avance x2 pendant 1s, arrêt pendant 0.5s
+          const cycleTick = tick % 30; // cycle de 1.5s = 30 ticks
+          return cycleTick < 20 ? base * 2 : 0;
+        }
         case 2: // Aequalis — alternance vitesse normale / vitesse x3
           return phase === 0 ? base : base * 3;
         case 3: { // Substitutor — avance/recule mais progression nette
-          const forward = base * 1.8;
+          const forward = base * 3.6;
           const backward = -base * 0.8;
           return phase === 0 ? forward : backward;
         }
