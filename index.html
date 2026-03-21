@@ -2504,6 +2504,7 @@
       G.animating = false;
       G.state = 'running';
       G.monstreX = ZONE_TIR.spawn_x;
+      G.moveTick = 0;
       G.jumping = false;
       G.jumpT = 0;
       G.jumpVX = 0;
@@ -2551,11 +2552,41 @@
       G.moveInt = setInterval(deplacerMonstre, 50);
     }
 
+    function getMonsterSpeed() {
+      const base = ZONE_TIR.vitesse;
+      const tick = G.moveTick || 0;
+      G.moveTick = tick + 1;
+      // Cycle de 0.5s = 10 ticks à 50ms
+      const phase = Math.floor(tick / 10) % 2; // 0 ou 1, alterne toutes les 0.5s
+
+      switch (G.monstreIdx) {
+        case 1: // Pannus — alternance vitesse normale / arrêt
+          return phase === 0 ? base : 0;
+        case 2: // Aequalis — alternance vitesse normale / vitesse x3
+          return phase === 0 ? base : base * 3;
+        case 3: { // Substitutor — avance/recule mais progression nette
+          const forward = base * 1.8;
+          const backward = -base * 0.8;
+          return phase === 0 ? forward : backward;
+        }
+        case 4: { // Évaluator — avance/recule + variations de vitesse
+          const t = (tick % 10) / 10; // position dans la demi-phase (0→1)
+          const speedVar = 0.5 + Math.sin(t * Math.PI * 2) * 0.5; // oscille 0→1
+          const forward = base * (1.5 + speedVar * 1.5);
+          const backward = -base * (0.4 + speedVar * 0.6);
+          return phase === 0 ? forward : backward;
+        }
+        default: // Distractus (0) — vitesse constante
+          return base;
+      }
+    }
+
     function deplacerMonstre() {
       if (G.state !== 'running' && G.state !== 'encounter') return;
 
-      // Monstre avance à vitesse constante
-      G.monstreX -= ZONE_TIR.vitesse;
+      // Vitesse selon le pattern du monstre
+      const speed = getMonsterSpeed();
+      G.monstreX -= speed;
       document.getElementById('monster-wrap').style.left = G.monstreX + '%';
 
       // Déplacement du personnage
