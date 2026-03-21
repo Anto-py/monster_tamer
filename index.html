@@ -385,7 +385,7 @@
       overflow: hidden;
       cursor: crosshair;
       flex-shrink: 0;
-      background: var(--ink);
+      background: #142a2d;
     }
 
     /* Fond défilant */
@@ -1934,10 +1934,10 @@
     ====================================================== */
     function svgBruxelles() {
       // Bâtiments, fenêtres, lampadaires, sol
-      const B = (x, y, w, h, rx = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#0e2121"/>`;
+      const B = (x, y, w, h, rx = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#1a3a3a"/>`;
       const W = (x, y, w = 7, h = 9, op = 0.7) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1" fill="#127676" opacity="${op}"/>`;
       const L = (x) =>
-        `<line x1="${x}" y1="190" x2="${x}" y2="215" stroke="#163535" stroke-width="3"/>
+        `<line x1="${x}" y1="190" x2="${x}" y2="215" stroke="#245050" stroke-width="3"/>
      <path d="M${x - 11} 190 Q${x} 179 ${x + 11} 190" stroke="#127676" stroke-width="2" fill="none"/>
      <circle cx="${x}" cy="188" r="4" fill="#127676" opacity="0.85"/>
      <circle cx="${x}" cy="188" r="7" fill="#127676" opacity="0.15"/>`;
@@ -1945,8 +1945,8 @@
       return `<svg viewBox="0 0 900 220" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="#0D1617"/>
-        <stop offset="100%" stop-color="#0a2020"/>
+        <stop offset="0%"   stop-color="#162d30"/>
+        <stop offset="100%" stop-color="#1a4040"/>
       </linearGradient>
     </defs>
     <rect width="900" height="220" fill="url(#sky)"/>
@@ -1989,10 +1989,10 @@
     ${W(762, 86)}${W(774, 86)}
 
     <!-- Arcs Art Nouveau -->
-    <path d="M 85 210 Q 118 182 152 210" fill="none" stroke="#163535" stroke-width="2.5"/>
-    <path d="M 315 210 Q 355 178 395 210" fill="none" stroke="#163535" stroke-width="2.5"/>
-    <path d="M 578 210 Q 621 174 664 210" fill="none" stroke="#163535" stroke-width="2.5"/>
-    <path d="M 755 210 Q 800 176 845 210" fill="none" stroke="#163535" stroke-width="2.5"/>
+    <path d="M 85 210 Q 118 182 152 210" fill="none" stroke="#245050" stroke-width="2.5"/>
+    <path d="M 315 210 Q 355 178 395 210" fill="none" stroke="#245050" stroke-width="2.5"/>
+    <path d="M 578 210 Q 621 174 664 210" fill="none" stroke="#245050" stroke-width="2.5"/>
+    <path d="M 755 210 Q 800 176 845 210" fill="none" stroke="#245050" stroke-width="2.5"/>
 
     <!-- Néons teal sur bâtiments -->
     <rect x="92"  y="67" width="55" height="2" rx="1" fill="#127676" opacity=".55"/>
@@ -2001,8 +2001,8 @@
     <rect x="762" y="57" width="75" height="2" rx="1" fill="#127676" opacity=".5"/>
 
     <!-- Sol -->
-    <rect y="210" width="900" height="10" fill="#091515"/>
-    <rect y="208" width="900" height="3"  fill="#127676" opacity=".25"/>
+    <rect y="210" width="900" height="10" fill="#122c2c"/>
+    <rect y="208" width="900" height="3"  fill="#127676" opacity=".35"/>
 
     <!-- Lampadaires -->
     ${L(140)}${L(320)}${L(500)}${L(680)}${L(860)}
