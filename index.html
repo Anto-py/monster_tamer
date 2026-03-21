@@ -1750,6 +1750,62 @@
 
   <script>
     /* ======================================================
+       SONS — synthèse Web Audio style 8-bit
+    ====================================================== */
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function playTone(freq, duration, type = 'square', volume = 0.15, slide = null) {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      if (slide) osc.frequency.linearRampToValueAtTime(slide, ctx.currentTime + duration);
+      gain.gain.setValueAtTime(volume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    // Saut — boing ascendant style Mario
+    function sfxJump() {
+      playTone(300, 0.15, 'square', 0.12, 600);
+    }
+
+    // Lancer de livre — petit "pew"
+    function sfxThrow() {
+      playTone(500, 0.08, 'square', 0.10, 800);
+      setTimeout(() => playTone(700, 0.06, 'square', 0.08), 60);
+    }
+
+    // Livre touche le monstre — fanfare de victoire courte
+    function sfxHit() {
+      playTone(523, 0.1, 'square', 0.13);
+      setTimeout(() => playTone(659, 0.1, 'square', 0.13), 100);
+      setTimeout(() => playTone(784, 0.15, 'square', 0.13), 200);
+      setTimeout(() => playTone(1047, 0.25, 'square', 0.15), 320);
+    }
+
+    // Perte de vie — descente triste
+    function sfxLoseLife() {
+      playTone(400, 0.15, 'square', 0.13, 350);
+      setTimeout(() => playTone(300, 0.15, 'square', 0.13, 250), 150);
+      setTimeout(() => playTone(200, 0.3, 'square', 0.10, 100), 300);
+    }
+
+    // Plus de livres — buzzer/erreur
+    function sfxNoAmmo() {
+      playTone(150, 0.12, 'square', 0.10);
+      setTimeout(() => playTone(120, 0.18, 'square', 0.10), 120);
+    }
+
+    /* ======================================================
        DONNÉES DES MONSTRES
     ====================================================== */
     const MONSTRES = [
@@ -2568,6 +2624,7 @@
       G.jumpT = 0;
       G.jumpVX = KEYS.right ? 1.5 : KEYS.left ? -1.5 : 0;
       document.getElementById('player-char').classList.add('jumping');
+      sfxJump();
 
       const dist = G.monstreX - G.playerX;
 
@@ -2680,11 +2737,12 @@
     function shoot() {
       if (G.animating) return;
       if (G.state !== 'running' && G.state !== 'encounter') return;
-      if (G.ammo <= 0) { showFeedback('Plus de livres !', 'miss', 900); return; }
+      if (G.ammo <= 0) { sfxNoAmmo(); showFeedback('Plus de livres !', 'miss', 900); return; }
 
       G.ammo--;
       renderAmmo();
       G.animating = true;
+      sfxThrow();
       animerLivre();
     }
 
@@ -2731,6 +2789,7 @@
           clearInterval(G.moveInt);
           clearInterval(G.timerInt);
           flash('teal');
+          sfxHit();
           showFeedback('Touché !', 'hit', 900);
           const wrap = document.getElementById('monster-wrap');
           wrap.style.animation = 'shake 0.4s ease-in-out';
@@ -2848,6 +2907,7 @@
     }
 
     function perdreVie() {
+      sfxLoseLife();
       G.vies--;
       // Mettre à jour l'icône correspondante
       const icons = document.getElementById('lives').querySelectorAll('.life-icon');
