@@ -1805,6 +1805,34 @@
       setTimeout(() => playTone(120, 0.18, 'square', 0.10), 120);
     }
 
+    // Gain d'un livre — petit "coin" joyeux
+    function sfxGainAmmo() {
+      playTone(880, 0.08, 'square', 0.10);
+      setTimeout(() => playTone(1175, 0.12, 'square', 0.12), 80);
+    }
+
+    // Jingle victoire finale — mélodie joyeuse ~3s style Mario
+    function sfxVictory() {
+      const notes = [
+        [523, 0.15], [523, 0.15], [523, 0.22],
+        [415, 0.15], [523, 0.18],
+        [659, 0.35],
+        [330, 0.35],
+        [523, 0.18], [392, 0.18],
+        [330, 0.22],
+        [440, 0.2], [494, 0.18],
+        [466, 0.08], [440, 0.22],
+        [392, 0.15], [523, 0.15], [659, 0.15],
+        [784, 0.22],
+        [880, 0.4],
+      ];
+      let t = 0;
+      for (const [freq, dur] of notes) {
+        setTimeout(() => playTone(freq, dur + 0.05, 'square', 0.12), t * 1000);
+        t += dur;
+      }
+    }
+
     /* ======================================================
        DONNÉES DES MONSTRES
     ====================================================== */
@@ -2579,7 +2607,7 @@
         setTimeout(() => { wrap.style.animation = ''; }, 500);
         G.state = 'running';
         // Recharger 1 projectile
-        if (G.ammo < MAX_AMMO) { G.ammo++; renderAmmo(); }
+        if (G.ammo < MAX_AMMO) { G.ammo++; renderAmmo(); sfxGainAmmo(); }
         return;
       }
 
@@ -3004,6 +3032,7 @@
 
       document.getElementById('end-collection').innerHTML = '';
       showScreen('screen-end');
+      sfxVictory();
     }
 
     /* ======================================================
