@@ -1993,10 +1993,14 @@
       const B = (x, y, w, h, rx = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#1a3a3a"/>`;
       const W = (x, y, w = 7, h = 9, op = 0.7) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1" fill="#127676" opacity="${op}"/>`;
       const L = (x) =>
-        `<line x1="${x}" y1="190" x2="${x}" y2="215" stroke="#245050" stroke-width="3"/>
-     <path d="M${x - 11} 190 Q${x} 179 ${x + 11} 190" stroke="#127676" stroke-width="2" fill="none"/>
-     <circle cx="${x}" cy="188" r="4" fill="#127676" opacity="0.85"/>
-     <circle cx="${x}" cy="188" r="7" fill="#127676" opacity="0.15"/>`;
+        `<line x1="${x}" y1="135" x2="${x}" y2="210" stroke="#245050" stroke-width="3.5"/>
+     <rect x="${x - 2}" y="210" width="4" height="4" rx="1" fill="#245050"/>
+     <path d="M${x - 14} 135 Q${x} 122 ${x + 14} 135" stroke="#127676" stroke-width="2.5" fill="none"/>
+     <circle cx="${x}" cy="132" r="5" fill="#1ae0e0" opacity="0.9"/>
+     <circle cx="${x}" cy="132" r="9" fill="#127676" opacity="0.2"/>
+     <polygon points="${x},136 ${x - 18},210 ${x + 18},210" fill="#1ae0e0" opacity="0.06"/>
+     <polygon points="${x},136 ${x - 12},210 ${x + 12},210" fill="#1ae0e0" opacity="0.06"/>
+     <polygon points="${x},136 ${x - 6},210 ${x + 6},210" fill="#1ae0e0" opacity="0.05"/>`;
 
       return `<svg viewBox="0 0 900 220" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
