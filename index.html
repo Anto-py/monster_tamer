@@ -431,11 +431,11 @@
       animation: tamingAnim 0.7s forwards;
     }
 
-    /* Projectile livre */
+    /* Projectile smartphone */
     #book {
       position: absolute;
-      width: 26px;
-      height: 20px;
+      width: 18px;
+      height: 26px;
       z-index: 20;
       display: none;
       pointer-events: none;
@@ -1633,8 +1633,8 @@
       }
 
       #book {
-        width: 20px;
-        height: 15px;
+        width: 14px;
+        height: 20px;
       }
 
       /* Collection */
@@ -1884,13 +1884,10 @@
         <div id="monster-wrap"></div>
         <!-- Livre / projectile -->
         <div id="book">
-          <svg viewBox="0 0 26 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="24" height="18" rx="3" fill="#E3A535" stroke="#E4632E" stroke-width="1.5" />
-            <line x1="13" y1="1" x2="13" y2="19" stroke="#E4632E" stroke-width="1.2" />
-            <line x1="5" y1="7" x2="11" y2="7" stroke="#E4632E" stroke-width="0.9" />
-            <line x1="5" y1="11" x2="11" y2="11" stroke="#E4632E" stroke-width="0.9" />
-            <line x1="15" y1="7" x2="21" y2="7" stroke="#E4632E" stroke-width="0.9" />
-            <line x1="15" y1="11" x2="21" y2="11" stroke="#E4632E" stroke-width="0.9" />
+          <svg viewBox="0 0 18 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="16" height="24" rx="3" fill="#1a1a2e" stroke="#E4632E" stroke-width="1.5" />
+            <rect x="3" y="4" width="12" height="16" rx="1" fill="#4af" />
+            <circle cx="9" cy="23" r="1.2" fill="#E3A535" />
           </svg>
         </div>
         <div id="feedback-text"></div>
@@ -1916,7 +1913,7 @@
       </div>
       <div class="touch-zone">
         <button class="touch-btn touch-btn-large" id="touch-jump" aria-label="Sauter">⬆</button>
-        <button class="touch-btn touch-btn-large" id="touch-shoot" aria-label="Tirer">📖</button>
+        <button class="touch-btn touch-btn-large" id="touch-shoot" aria-label="Tirer">📱</button>
       </div>
     </div>
 
@@ -1938,17 +1935,17 @@
           <ul class="intro-controls intro-controls-keyboard">
             <li><span class="intro-key">←</span><span class="intro-key">→</span> Se déplacer dans le décor</li>
             <li><span class="intro-key">↑</span> Sauter par-dessus le monstre pour l'esquiver</li>
-            <li><span class="intro-key">ESPACE</span> Lancer un livre pour dompter le monstre</li>
+            <li><span class="intro-key">ESPACE</span> Lancer un smartphone pour dompter le monstre</li>
           </ul>
           <ul class="intro-controls intro-controls-touch" style="display:none;">
             <li><span class="intro-key">◀</span><span class="intro-key">▶</span> Se déplacer dans le décor</li>
             <li><span class="intro-key">⬆</span> Sauter par-dessus le monstre</li>
-            <li><span class="intro-key">📖</span> Lancer un livre pour dompter le monstre</li>
+            <li><span class="intro-key">📱</span> Lancer un smartphone pour dompter le monstre</li>
           </ul>
           <p style="margin-top:14px;font-size:0.82rem;color:#555;line-height:1.5;">
-            Vise bien : le livre doit toucher le monstre. De trop près il passe au-dessus, de trop loin, il ne touche
+            Vise bien : le smartphone doit toucher le monstre. De trop près il passe au-dessus, de trop loin, il ne touche
             rien !<br>
-            Tu as <strong>3 livres</strong> — Saute au dessus du monstre pour en récupérer.<br>
+            Tu as <strong>3 smartphones</strong> — Saute au dessus du monstre pour en récupérer.<br>
             Si le monstre te touche, tu perds une vie. Tu as <strong>3 vies</strong> au total.
           </p>
         </div>
@@ -2693,12 +2690,12 @@
     const MAX_AMMO = 3;
 
     function svgAmmo() {
-      return `<svg viewBox="0 0 26 20" class="ammo-icon"><rect x="1" y="1" width="24" height="18" rx="3" fill="#E3A535" stroke="#E4632E" stroke-width="1.5"/><line x1="13" y1="1" x2="13" y2="19" stroke="#E4632E" stroke-width="1.2"/></svg>`;
+      return `<svg viewBox="0 0 18 26" class="ammo-icon"><rect x="1" y="1" width="16" height="24" rx="3" fill="#1a1a2e" stroke="#E4632E" stroke-width="1.5"/><rect x="3" y="4" width="12" height="16" rx="1" fill="#4af"/><circle cx="9" cy="23" r="1.2" fill="#E3A535"/></svg>`;
     }
 
     function renderAmmo() {
       const el = document.getElementById('ammo');
-      el.innerHTML = `<span id="ammo-label">LIVRES</span>` +
+      el.innerHTML = `<span id="ammo-label">SMARTPHONES</span>` +
         Array.from({ length: MAX_AMMO }, (_, i) =>
           `<span class="ammo-icon${i >= G.ammo ? ' spent' : ''}">${svgAmmo()}</span>`
         ).join('');
@@ -3091,7 +3088,7 @@
     function shoot() {
       if (G.animating) return;
       if (G.state !== 'running' && G.state !== 'encounter') return;
-      if (G.ammo <= 0) { sfxNoAmmo(); showFeedback('Plus de livres !', 'miss', 900); return; }
+      if (G.ammo <= 0) { sfxNoAmmo(); showFeedback('Plus de smartphones !', 'miss', 900); return; }
 
       G.ammo--;
       renderAmmo();
