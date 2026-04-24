@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
 
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Monster Tamer — Le Défi du 1:1</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet">
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Monster Tamer — Le Défi du 1:1</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
     /* ===== VARIABLES RETROFUTURISTES ===== */
     :root {
       --teal: #127676;
@@ -1819,212 +1817,196 @@
     }
   </style>
 </head>
-
 <body>
-  <!-- Overlay rotation portrait -->
-  <div id="rotate-overlay">
-    <div class="rotate-icon">📱</div>
-    <p>TOURNE TON ÉCRAN</p>
-    <span class="rotate-sub">Ce jeu se joue en mode paysage</span>
-  </div>
-
-  <div id="app">
-
-    <!-- Overlay flash (effets rouges/teal) -->
-    <div id="flash-overlay"></div>
-
-    <!-- ================================================
+<!-- Overlay rotation portrait -->
+<div id="rotate-overlay">
+<div class="rotate-icon">📱</div>
+<p>TOURNE TON ÉCRAN</p>
+<span class="rotate-sub">Ce jeu se joue en mode paysage</span>
+</div>
+<div id="app">
+<!-- Overlay flash (effets rouges/teal) -->
+<div id="flash-overlay"></div>
+<!-- ================================================
        ÉCRAN D'ACCUEIL
   ================================================ -->
-    <div id="screen-welcome" class="screen active">
-      <h1>MONSTER<br><span>TAMER</span></h1>
-      <div class="subtitle-badge">ENSEIGNANTS · LE DÉFI DU NUMÉRIQUE</div>
-      <p class="tagline">Tu intègres le numérique en classe ?<br>Ces 5 monstres te connaissent — apprivoise-les.</p>
-      <div class="welcome-monsters" id="welcome-monsters"></div>
-      <button class="btn btn-primary" onclick="showScreen('screen-select')">▶ COMMENCER</button>
-    </div>
-
-    <!-- ================================================
+<div class="screen active" id="screen-welcome">
+<h1>MONSTER<br/><span>TAMER</span></h1>
+<div class="subtitle-badge">ENSEIGNANTS · LE DÉFI DU NUMÉRIQUE</div>
+<p class="tagline">Tu intègres le numérique en classe ?<br/>Ces 5 monstres te connaissent — apprivoise-les.</p>
+<div class="welcome-monsters" id="welcome-monsters"></div>
+<button class="btn btn-primary" onclick="showScreen('screen-select')">▶ COMMENCER</button>
+</div>
+<!-- ================================================
        SÉLECTION DU PERSONNAGE
   ================================================ -->
-    <div id="screen-select" class="screen">
-      <h2>CHOISIS TON ENSEIGNANT</h2>
-      <p class="sub">Aide-le à dompter les monstres!</p>
-      <div class="character-grid" id="character-grid"></div>
-      <div class="select-actions">
-        <button class="btn btn-secondary" onclick="showScreen('screen-welcome')">← RETOUR</button>
-        <button class="btn btn-primary" id="btn-play" onclick="startGame()" disabled
-          style="opacity:.4;cursor:not-allowed">JOUER →</button>
-      </div>
-    </div>
-
-    <!-- ================================================
+<div class="screen" id="screen-select">
+<h2>CHOISIS TON ENSEIGNANT</h2>
+<p class="sub">Aide-le à dompter les monstres!</p>
+<div class="character-grid" id="character-grid"></div>
+<div class="select-actions">
+<button class="btn btn-secondary" onclick="showScreen('screen-welcome')">← RETOUR</button>
+<button class="btn btn-primary" disabled="" id="btn-play" onclick="startGame()" style="opacity:.4;cursor:not-allowed">JOUER →</button>
+</div>
+</div>
+<!-- ================================================
        ÉCRAN DE JEU
   ================================================ -->
-    <div id="screen-game" class="screen">
-
-      <!-- HUD -->
-      <div id="hud">
-        <div id="lives"></div>
-        <div id="ammo"></div>
-        <div id="progress-bar"></div>
-        <button id="btn-mute" class="btn-mute" onclick="toggleMute()" title="Couper/activer la musique">🔊</button>
-        <div id="timer-wrap" class="hidden">
-          <div id="timer-label">TEMPS</div>
-          <div id="timer-bar-outer">
-            <div id="timer-bar"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stage de jeu (clic = tir) -->
-      <div id="runner-stage" onclick="shoot()">
-        <div id="bg-scroll"></div>
-        <div id="player-char"></div>
-        <div id="monster-wrap"></div>
-        <!-- Livre / projectile -->
-        <div id="book">
-          <svg viewBox="0 0 18 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="16" height="24" rx="3" fill="#1a1a2e" stroke="#E4632E" stroke-width="1.5" />
-            <rect x="3" y="4" width="12" height="16" rx="1" fill="#4af" />
-            <circle cx="9" cy="23" r="1.2" fill="#E3A535" />
-          </svg>
-        </div>
-        <div id="feedback-text"></div>
-        <div id="monster-name-tag"></div>
-      </div>
-
-      <!-- Consigne -->
-      <div id="hint-text">ESPACE pour tirer · ↑ pour sauter par-dessus le monstre · ← → pour se déplacer</div>
-
-      <!-- Galerie de collection -->
-      <div id="collection">
-        <div id="collection-label">DOMPTÉS</div>
-        <div id="collection-items"></div>
-      </div>
-
-    </div><!-- /screen-game -->
-
-    <!-- Touch controls mobiles -->
-    <div id="touch-controls">
-      <div class="touch-zone">
-        <button class="touch-btn" id="touch-left" aria-label="Gauche">◀</button>
-        <button class="touch-btn" id="touch-right" aria-label="Droite">▶</button>
-      </div>
-      <div class="touch-zone">
-        <button class="touch-btn touch-btn-large" id="touch-jump" aria-label="Sauter">⬆</button>
-        <button class="touch-btn touch-btn-large" id="touch-shoot" aria-label="Tirer">📱</button>
-      </div>
-    </div>
-
-    <!-- ================================================
+<div class="screen" id="screen-game">
+<!-- HUD -->
+<div id="hud">
+<div id="lives"></div>
+<div id="ammo"></div>
+<div id="progress-bar"></div>
+<button class="btn-mute" id="btn-mute" onclick="toggleMute()" title="Couper/activer la musique">🔊</button>
+<div class="hidden" id="timer-wrap">
+<div id="timer-label">TEMPS</div>
+<div id="timer-bar-outer">
+<div id="timer-bar"></div>
+</div>
+</div>
+</div>
+<!-- Stage de jeu (clic = tir) -->
+<div id="runner-stage" onclick="shoot()">
+<div id="bg-scroll"></div>
+<div id="player-char"></div>
+<div id="monster-wrap"></div>
+<!-- Livre / projectile -->
+<div id="book">
+<svg fill="none" viewbox="0 0 18 26" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a1a2e" height="24" rx="3" stroke="#E4632E" stroke-width="1.5" width="16" x="1" y="1"></rect>
+<rect fill="#4af" height="16" rx="1" width="12" x="3" y="4"></rect>
+<circle cx="9" cy="23" fill="#E3A535" r="1.2"></circle>
+</svg>
+</div>
+<div id="feedback-text"></div>
+<div id="monster-name-tag"></div>
+</div>
+<!-- Consigne -->
+<div id="hint-text">ESPACE pour tirer · ↑ pour sauter par-dessus le monstre · ← → pour se déplacer</div>
+<!-- Galerie de collection -->
+<div id="collection">
+<div id="collection-label">DOMPTÉS</div>
+<div id="collection-items"></div>
+</div>
+</div><!-- /screen-game -->
+<!-- Touch controls mobiles -->
+<div id="touch-controls">
+<div class="touch-zone">
+<button aria-label="Gauche" class="touch-btn" id="touch-left">◀</button>
+<button aria-label="Droite" class="touch-btn" id="touch-right">▶</button>
+</div>
+<div class="touch-zone">
+<button aria-label="Sauter" class="touch-btn touch-btn-large" id="touch-jump">⬆</button>
+<button aria-label="Tirer" class="touch-btn touch-btn-large" id="touch-shoot">📱</button>
+</div>
+</div>
+<!-- ================================================
        MODAL INTRO MISSION
   ================================================ -->
-    <div id="modal-intro">
-      <div class="intro-card">
-        <div class="intro-header">
-          <h3>MISSION BRIEFING</h3>
-          <p>
-            Bienvenu courageux enseignant qui va te retrouver face à des classes équipées de PC portables !<br><br>
+<div id="modal-intro">
+<div class="intro-card">
+<div class="intro-header">
+<h3>MISSION BRIEFING</h3>
+<p>
+            Bienvenu courageux enseignant qui va te retrouver face à des classes équipées de PC portables !<br/><br/>
             Ta mission, si tu l'acceptes : <strong>apprivoiser les peurs</strong> face auxquelles nous nous retrouvons
             tous !
           </p>
-        </div>
-        <div class="intro-body">
-          <h4>COMMENT JOUER</h4>
-          <ul class="intro-controls intro-controls-keyboard">
-            <li><span class="intro-key">←</span><span class="intro-key">→</span> Se déplacer dans le décor</li>
-            <li><span class="intro-key">↑</span> Sauter par-dessus le monstre pour l'esquiver</li>
-            <li><span class="intro-key">ESPACE</span> Lancer un smartphone pour dompter le monstre</li>
-          </ul>
-          <ul class="intro-controls intro-controls-touch" style="display:none;">
-            <li><span class="intro-key">◀</span><span class="intro-key">▶</span> Se déplacer dans le décor</li>
-            <li><span class="intro-key">⬆</span> Sauter par-dessus le monstre</li>
-            <li><span class="intro-key">📱</span> Lancer un smartphone pour dompter le monstre</li>
-          </ul>
-          <p style="margin-top:14px;font-size:0.82rem;color:#555;line-height:1.5;">
+</div>
+<div class="intro-body">
+<h4>COMMENT JOUER</h4>
+<ul class="intro-controls intro-controls-keyboard">
+<li><span class="intro-key">←</span><span class="intro-key">→</span> Se déplacer dans le décor</li>
+<li><span class="intro-key">↑</span> Sauter par-dessus le monstre pour l'esquiver</li>
+<li><span class="intro-key">ESPACE</span> Lancer un smartphone pour dompter le monstre</li>
+</ul>
+<ul class="intro-controls intro-controls-touch" style="display:none;">
+<li><span class="intro-key">◀</span><span class="intro-key">▶</span> Se déplacer dans le décor</li>
+<li><span class="intro-key">⬆</span> Sauter par-dessus le monstre</li>
+<li><span class="intro-key">📱</span> Lancer un smartphone pour dompter le monstre</li>
+</ul>
+<p style="margin-top:14px;font-size:0.82rem;color:#555;line-height:1.5;">
             Vise bien : le smartphone doit toucher le monstre. De trop près il passe au-dessus, de trop loin, il ne touche
-            rien !<br>
-            Tu as <strong>3 smartphones</strong> — Saute au dessus du monstre pour en récupérer.<br>
+            rien !<br/>
+            Tu as <strong>3 smartphones</strong> — Saute au dessus du monstre pour en récupérer.<br/>
             Si le monstre te touche, tu perds une vie. Tu as <strong>3 vies</strong> au total.
           </p>
-        </div>
-        <div class="intro-footer">
-          <button class="btn btn-primary" onclick="lancerApresIntro()">J'ACCEPTE LA MISSION !</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================================================
+</div>
+<div class="intro-footer">
+<button class="btn btn-primary" onclick="lancerApresIntro()">J'ACCEPTE LA MISSION !</button>
+</div>
+</div>
+</div>
+<!-- ================================================
        MODAL PRÉ-MONSTRE
   ================================================ -->
-    <div id="modal-premonstre">
-      <div class="premonstre-card">
-        <div class="premonstre-svg" id="premonstre-svg"></div>
-        <div class="premonstre-alerte">⚠ PEUR DÉTECTÉE</div>
-        <div class="premonstre-nom" id="premonstre-nom"></div>
-        <p class="premonstre-peur" id="premonstre-peur"></p>
-        <button class="btn btn-primary" onclick="demarrerMonstre()">⚔ AFFRONTER</button>
-      </div>
-    </div>
-
-    <!-- ================================================
+<div id="modal-premonstre">
+<div class="premonstre-card">
+<div class="premonstre-svg" id="premonstre-svg"></div>
+<div class="premonstre-alerte">⚠ PEUR DÉTECTÉE</div>
+<div class="premonstre-nom" id="premonstre-nom"></div>
+<p class="premonstre-peur" id="premonstre-peur"></p>
+<button class="btn btn-primary" onclick="demarrerMonstre()">⚔ AFFRONTER</button>
+</div>
+</div>
+<!-- ================================================
        PANNEAU RÉVÉLATION (modal)
   ================================================ -->
-    <div id="modal-reveal">
-      <div class="modal-card">
-        <div class="modal-header">
-          <div class="modal-header-svg" id="modal-svg"></div>
-          <div class="modal-header-text">
-            <div class="nom-initial" id="modal-nom-initial"></div>
-            <div class="nom-dompte" id="modal-nom-dompte"></div>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="peur-text" id="modal-peur"></div>
-          <div class="levier-title" id="modal-levier-title"></div>
-          <div class="levier-desc" id="modal-levier-desc"></div>
-          <ul class="exemples-list" id="modal-exemples"></ul>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" onclick="continuerApresReveal()">CONTINUER →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================================================
+<div id="modal-reveal">
+<div class="modal-card">
+<div class="modal-header">
+<div class="modal-header-svg" id="modal-svg"></div>
+<div class="modal-header-text">
+<div class="nom-initial" id="modal-nom-initial"></div>
+<div class="nom-dompte" id="modal-nom-dompte"></div>
+</div>
+</div>
+<div class="modal-body">
+<div class="peur-text" id="modal-peur"></div>
+<div class="levier-title" id="modal-levier-title"></div>
+<div class="levier-desc" id="modal-levier-desc"></div>
+<ul class="exemples-list" id="modal-exemples"></ul>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" onclick="continuerApresReveal()">CONTINUER →</button>
+</div>
+</div>
+</div>
+<!-- ================================================
        GAME OVER
   ================================================ -->
-    <div id="screen-gameover" class="screen">
-      <h2>GAME OVER</h2>
-      <p class="go-msg">En classe, on ne s'avoue jamais vaincu.<br>Reprends là où tu t'es arrêté·e — tu as déjà les
+<div class="screen" id="screen-gameover">
+<h2>GAME OVER</h2>
+<p class="go-msg">En classe, on ne s'avoue jamais vaincu.<br/>Reprends là où tu t'es arrêté·e — tu as déjà les
         clés.</p>
-      <div id="gameover-collection"></div>
-      <div class="go-actions">
-        <button class="btn btn-primary" onclick="reessayer()">↺ RÉESSAYER</button>
-        <button class="btn btn-secondary" onclick="retourSelect()">↩ CHANGER DE PERSO</button>
-      </div>
-    </div>
-
-    <!-- ================================================
+<div id="gameover-collection"></div>
+<div class="go-actions">
+<button class="btn btn-primary" onclick="reessayer()">↺ RÉESSAYER</button>
+<button class="btn btn-secondary" onclick="retourSelect()">↩ CHANGER DE PERSO</button>
+</div>
+</div>
+<!-- ================================================
        ÉCRAN DE FIN
   ================================================ -->
-    <div id="screen-end" class="screen">
-      <h2>MISSION ACCOMPLIE !</h2>
-      <p class="conclusion">
-        Tu as nommé et apprivoisé les 5 peurs que chaque enseignant connaît.<br>
+<div class="screen" id="screen-end">
+<h2>MISSION ACCOMPLIE !</h2>
+<p class="conclusion">
+        Tu as nommé et apprivoisé les 5 peurs que chaque enseignant connaît.<br/>
         Ces freins ne disparaissent pas d'eux-mêmes — mais tu peux les transformer en leviers concrets. Peu importe la
         section dans laquelle tu enseignes, peu importe le cours que tu enseignes, le numérique peut aussi être un
         allié!
       </p>
-      <div id="end-dance"></div>
-      <div id="end-collection"></div>
-      <button class="btn btn-primary" onclick="retourSelect()">↩ REJOUER</button>
-    </div>
-
-  </div><!-- /app -->
-
-  <script>
+<div id="end-dance"></div>
+<div id="end-collection"></div>
+<button class="btn btn-primary" onclick="retourSelect()">↩ REJOUER</button>
+</div>
+<div class="ab-attribution" style="text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(128,128,128,0.25);font-size:0.8rem;opacity:0.65;">
+<a href="https://www.linkedin.com/in/antonin-bareau/" rel="noopener" style="font-weight:bold;color:inherit;text-decoration:none;" target="_blank">Antonin Bareau</a>
+   — 
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" style="color:inherit;text-decoration:none;" target="_blank">Licence CC BY-SA 4.0</a>
+</div></div><!-- /app -->
+<script>
     /* ======================================================
        SONS — synthèse Web Audio style 8-bit
     ====================================================== */
@@ -3345,11 +3327,6 @@
         `<div class="dance-item dance-hero">
       ${svgPerso(G.character, false)}
       <span class="dance-name">${G.character.nom}</span>
-    <div class="ab-attribution" style="text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(128,128,128,0.25);font-size:0.8rem;opacity:0.65;">
-  <a href="https://www.linkedin.com/in/antonin-bareau/" target="_blank" rel="noopener" style="font-weight:bold;color:inherit;text-decoration:none;">Antonin Bareau</a>
-  &nbsp;&mdash;&nbsp;
-  <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Licence CC BY-SA 4.0</a>
-</div>
 </div>`
       );
       danceEl.innerHTML = monstresHtml.join('');
@@ -3549,7 +3526,5 @@
     initWelcome();
     initSelect();
   </script>
-
 </body>
-
 </html>
